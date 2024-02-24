@@ -8,4 +8,4 @@
 
 source ./vars.sh
 
-srun ./miniTri.exe $graph
+srun ./trace.sh ./miniTri.exe $graph
