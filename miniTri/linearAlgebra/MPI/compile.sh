@@ -1,5 +1,5 @@
 #!/bin/bash
 
-module unload mpi
+module unload impi
 module load openmpi
 make
