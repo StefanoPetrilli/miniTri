@@ -1,0 +1,436 @@
+DEFAULT_OPTIONS
+
+LEVEL               THREAD
+UNITS               NANOSEC
+LOOK_BACK           100
+SPEED               1
+FLAG_ICONS          ENABLED
+NUM_OF_STATE_COLORS 1000
+YMAX_SCALE          37
+
+
+DEFAULT_SEMANTIC
+
+THREAD_FUNC          State As Is
+
+
+STATES
+0    Idle
+1    Running
+2    Not created
+3    Waiting a message
+4    Blocking Send
+5    Synchronization
+6    Test/Probe
+7    Scheduling and Fork/Join
+8    Wait/WaitAll
+9    Blocked
+10    Immediate Send
+11    Immediate Receive
+12    I/O
+13    Group Communication
+14    Tracing Disabled
+15    Others
+16    Send Receive
+17    Memory transfer
+18    Profiling
+19    On-line analysis
+20    Remote memory access
+21    Atomic memory operation
+22    Memory ordering operation
+23    Distributed locking
+24    Overhead
+25    One-sided op
+26    Startup latency
+27    Waiting links
+28    Data copy
+29    RTT
+30    Allocating memory
+31    Freeing memory
+32    Configuring accelerator
+
+
+STATES_COLOR
+0    {117,195,255}
+1    {0,0,255}
+2    {255,255,255}
+3    {255,0,0}
+4    {255,0,174}
+5    {179,0,0}
+6    {0,255,0}
+7    {255,255,0}
+8    {235,0,0}
+9    {0,162,0}
+10    {255,0,255}
+11    {100,100,177}
+12    {172,174,41}
+13    {255,144,26}
+14    {2,255,177}
+15    {192,224,0}
+16    {66,66,66}
+17    {255,0,96}
+18    {169,169,169}
+19    {169,0,0}
+20    {0,109,255}
+21    {200,61,68}
+22    {200,66,0}
+23    {0,41,0}
+24    {139,121,177}
+25    {116,116,116}
+26    {200,50,89}
+27    {255,171,98}
+28    {0,68,189}
+29    {52,43,0}
+30    {255,46,0}
+31    {100,216,32}
+32    {118,185,0}
+
+
+EVENT_TYPE
+9   50000001    MPI Point-to-point
+VALUES
+4   MPI_Irecv
+2   MPI_Recv
+1   MPI_Send
+41   MPI_Sendrecv
+6   MPI_Waitall
+0   Outside MPI
+
+
+EVENT_TYPE
+9   50000002    MPI Collective Comm
+VALUES
+10   MPI_Allreduce
+8   MPI_Barrier
+0   Outside MPI
+
+
+EVENT_TYPE
+9   50000003    MPI Other
+VALUES
+19   MPI_Comm_rank
+20   MPI_Comm_size
+32   MPI_Finalize
+31   MPI_Init
+0   Outside MPI
+
+
+EVENT_TYPE
+1    50100001    Send Size in MPI Global OP
+1    50100002    Recv Size in MPI Global OP
+1    50100003    Root in MPI Global OP
+1    50100004    Communicator in MPI Global OP
+
+
+EVENT_TYPE
+6    40000033    Executing CPU
+6    40000133    CPU-Event sampling interval
+
+
+EVENT_TYPE
+6    40000001    Application
+VALUES
+0      End
+1      Begin
+
+
+EVENT_TYPE
+6    40000050    RAW clock() value from system
+
+
+EVENT_TYPE
+6    40000003    Flushing Traces
+VALUES
+0      End
+1      Begin
+
+
+EVENT_TYPE
+6    40000002    Trace initialization
+VALUES
+0      End
+1      Begin
+
+
+EVENT_TYPE
+6    40000036    Process IDentifier
+6    40000037    Parent Process IDentifier
+6    40000038    fork() depth
+
+
+GRADIENT_COLOR
+0    {0,255,2}
+1    {0,244,13}
+2    {0,232,25}
+3    {0,220,37}
+4    {0,209,48}
+5    {0,197,60}
+6    {0,185,72}
+7    {0,173,84}
+8    {0,162,95}
+9    {0,150,107}
+10    {0,138,119}
+11    {0,127,130}
+12    {0,115,142}
+13    {0,103,154}
+14    {0,91,166}
+
+
+GRADIENT_NAMES
+0    Gradient 0
+1    Grad. 1/MPI Events
+2    Grad. 2/OMP Events
+3    Grad. 3/OMP locks
+4    Grad. 4/User func
+5    Grad. 5/User Events
+6    Grad. 6/General Events
+7    Grad. 7/Hardware Counters
+8    Gradient 8
+9    Gradient 9
+10    Gradient 10
+11    Gradient 11
+12    Gradient 12
+13    Gradient 13
+14    Gradient 14
+
+
+EVENT_TYPE
+0    70000001    Caller at level 1
+0    70000002    Caller at level 2
+0    70000003    Caller at level 3
+VALUES
+0   End
+1 Unresolved
+2 _NOT_Found
+3 main
+4 _start
+5 CSRMat::CSRMat
+6 Vector::Vector
+7 Graph::Graph
+8 CSRMat::..MMMatrix [CSRMat::readMMMatrix]
+9 CSRMat::..ceMatrix [CSRMat::createIncidenceMatrix]
+10 Graph::t..numerate [Graph::triangleEnumerate]
+11 sendRecvSubmat
+12 CSRMat::matmat
+13 CSRMat::SpMV1
+14 Graph::c..eDegrees [Graph::calculateTriangleDegrees]
+15 CSRMat::..eKCounts [CSRMat::computeKCounts]
+16 Graph::c..eKCounts [Graph::calculateKCounts]
+
+
+EVENT_TYPE
+0    80000001    Caller line at level 1
+0    80000002    Caller line at level 2
+0    80000003    Caller line at level 3
+VALUES
+0   End
+1 0 (Unresolved)
+2 0 (_NOT_Found)
+3 239 (CSRMatrix.cpp, miniTri.exe)
+4 349 (CSRMatrix.cpp, miniTri.exe)
+5 449 (CSRMatrix.cpp, miniTri.exe)
+6 504 (CSRMatrix.cpp, miniTri.exe)
+7 512 (CSRMatrix.cpp, miniTri.exe)
+8 533 (CSRMatrix.cpp, miniTri.exe)
+9 563 (CSRMatrix.cpp, miniTri.exe)
+10 578 (CSRMatrix.cpp, miniTri.exe)
+11 583 (CSRMatrix.cpp, miniTri.exe)
+12 595 (CSRMatrix.cpp, miniTri.exe)
+13 610 (CSRMatrix.cpp, miniTri.exe)
+14 615 (CSRMatrix.cpp, miniTri.exe)
+15 743 (CSRMatrix.cpp, miniTri.exe)
+16 819 (CSRMatrix.cpp, miniTri.exe)
+17 891 (CSRMatrix.cpp, miniTri.exe)
+18 916 (CSRMatrix.cpp, miniTri.exe)
+19 924 (CSRMatrix.cpp, miniTri.exe)
+20 996 (CSRMatrix.cpp, miniTri.exe)
+21 1113 (CSRMatrix.cpp, miniTri.exe)
+22 1433 (CSRMatrix.cpp, miniTri.exe)
+23 1598 (CSRMatrix.cpp, miniTri.exe)
+24 1796 (CSRMatrix.cpp, miniTri.exe)
+25 115 (CSRMatrix.hpp, miniTri.exe)
+26 115 (CSRMatrix.hpp, miniTri.exe)
+27 116 (CSRMatrix.hpp, miniTri.exe)
+28 116 (CSRMatrix.hpp, miniTri.exe)
+29 149 (CSRMatrix.hpp, miniTri.exe)
+30 150 (CSRMatrix.hpp, miniTri.exe)
+31 95 (Graph.cpp, miniTri.exe)
+32 126 (Graph.cpp, miniTri.exe)
+33 128 (Graph.cpp, miniTri.exe)
+34 130 (Graph.cpp, miniTri.exe)
+35 131 (Graph.cpp, miniTri.exe)
+36 226 (Graph.cpp, miniTri.exe)
+37 295 (Graph.cpp, miniTri.exe)
+38 115 (Graph.hpp, miniTri.exe)
+39 116 (Graph.hpp, miniTri.exe)
+40 120 (Graph.hpp, miniTri.exe)
+41 80 (Vector.hpp, miniTri.exe)
+42 80 (Vector.hpp, miniTri.exe)
+43 81 (Vector.hpp, miniTri.exe)
+44 81 (Vector.hpp, miniTri.exe)
+45 67 (miniTri.cpp, miniTri.exe)
+46 99 (miniTri.cpp, miniTri.exe)
+47 101 (miniTri.cpp, miniTri.exe)
+48 108 (miniTri.cpp, miniTri.exe)
+49 109 (miniTri.cpp, miniTri.exe)
+50 112 (miniTri.cpp, miniTri.exe)
+51 118 (start.S, miniTri.exe)
+
+
+EVENT_TYPE
+0 41000000 Object addresses for task 1.1
+VALUES
+1 completed.6347 [0x00639dd0-0x00639dd0]
+2 main$$LSDA [0x00436a10-0x00436a55]
+3 _ZN5GraphC1ESsbP19ompi_communicator_t$$LSDA [0x00436a58-0x00436a94]
+4 _ZN6VectorD1Ev$$LSDA [0x00436a98-0x00436aa9]
+5 _ZNSt6vectorIiSaIiEED1Ev$$LSDA [0x00436aac-0x00436abd]
+6 _ZNSt6vectorI9CSRSubmatSaIS0_EED1Ev$$LSDA [0x00436ac0-0x00436ad5]
+7 _ZN6CSRMatD1Ev$$LSDA [0x00436ad8-0x00436aee]
+8 _ZNSt10shared_ptrI6CSRMatED1Ev$$LSDA [0x00436af0-0x00436b03]
+9 _ZNSt3mapIiS_IiiSt4lessIiESaISt4pairIKiiEEES1_SaIS2_IS3_S6_EEED1Ev$$LSDA [0x00436b04-0x00436b17]
+10 _ZNSt8_Rb_treeIiSt4pairIKiSt3mapIiiSt4lessIiESaIS0_IS1_iEEEESt10_Select1stIS8_ES4_SaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E$$LSDA [0x00436b18-0x00436b2b]
+11 _ZN5GraphD1Ev$$LSDA [0x00436b2c-0x00436b42]
+12 _ZNSt6vectorIS_IiSaIiEESaIS1_EED1Ev$$LSDA [0x00436b44-0x00436b59]
+13 _ZN17_INTERNAL259fcc5eSt8__ioinitE [0x00639dd4-0x00639dd4]
+14 _ZNSt12_Destroy_auxILb0EE9__destroyIP9CSRSubmatEEvT_S4_$$LSDA [0x00436b5c-0x00436b71]
+15 _ZNSt12_Vector_baseIiSaIiEED1Ev$$LSDA [0x00436b74-0x00436b85]
+16 _ZNSt6vectorI9CSRSubmatSaIS0_EE17_M_default_appendEm$$LSDA [0x00436b88-0x00436ba3]
+17 _Z5addNZRSt3mapIiSt4listIiSaIiEESt4lessIiESaISt4pairIKiS2_EEEii$$LSDA [0x00436ba4-0x00436bd1]
+18 _ZNK6CSRMat14getSumElementsEv$$LSDA [0x00436bd4-0x00436bf0]
+19 _ZN6CSRMat5SpMV1EbR6Vector$$LSDA [0x00436bf4-0x00436c1c]
+20 _ZNSt6vectorIiSaIiEEC1EmRKiRKS0_$$LSDA [0x00436c20-0x00436c40]
+21 _ZN6CSRMat6matmatERKS_S1_$$LSDA [0x00436c44-0x00436c8e]
+22 _ZNSt12_Vector_baseIiSaIiEED1Ev$$LSDA [0x00436c90-0x00436ca1]
+23 _ZNSt6vectorIS_IiSaIiEESaIS1_EED1Ev$$LSDA [0x00436ca4-0x00436cb9]
+24 _ZNSt8_Rb_treeIiSt4pairIKiSt4listIiSaIiEEESt10_Select1stIS5_ESt4lessIiESaIS5_EE5eraseB5cxx11ESt17_Rb_tree_iteratorIS5_E$$LSDA [0x00436cbc-0x00436ccb]
+25 _Z19serialSubmatrixMultRK9CSRSubmatiS1_iRSt6vectorISt3mapIiSt4listIiSaIiEESt4lessIiESaISt4pairIKiS6_EEESaISD_EE$$LSDA [0x00436ccc-0x00436cf9]
+26 _ZNSt4pairIiSt4listIiSaIiEEED1Ev$$LSDA [0x00436cfc-0x00436d0b]
+27 _ZNSt4listIiSaIiEED1Ev$$LSDA [0x00436d0c-0x00436d1b]
+28 _ZNSt6vectorIS_IiSaIiEESaIS1_EE6resizeEm$$LSDA [0x00436d1c-0x00436d36]
+29 _Z14sendRecvSubmatRK9CSRSubmatiiiP19ompi_communicator_tiRS_RiS5_$$LSDA [0x00436d38-0x00436d93]
+30 _ZNSt12_Destroy_auxILb0EE9__destroyIPSt3mapIiSt4listIiSaIiEESt4lessIiESaISt4pairIKiS5_EEEEEvT_SE_$$LSDA [0x00436d94-0x00436da7]
+31 _ZNSt6vectorIS_ISt3mapIiSt4listIiSaIiEESt4lessIiESaISt4pairIKiS3_EEESaISA_EESaISC_EED1Ev$$LSDA [0x00436da8-0x00436dbd]
+32 _ZN9CSRSubmatD1Ev$$LSDA [0x00436dc0-0x00436dd5]
+33 _ZN6CSRMat14computeKCountsERK6VectorS2_RSt3mapIiS3_IiiSt4lessIiESaISt4pairIKiiEEES5_SaIS6_IS7_SA_EEERSt6vectorIiSaIiEE$$LSDA [0x00436dd8-0x00436e47]
+34 _ZNSt3mapIiiSt4lessIiESaISt4pairIKiiEEEixERS3_$$LSDA [0x00436e48-0x00436e5f]
+35 _ZNSt3mapIiS_IiiSt4lessIiESaISt4pairIKiiEEES1_SaIS2_IS3_S6_EEEixERS3_$$LSDA [0x00436e60-0x00436e78]
+36 _ZNSt8_Rb_treeIiSt4pairIKiSt3mapIiiSt4lessIiESaIS0_IS1_iEEEESt10_Select1stIS8_ES4_SaIS8_EE15_M_destroy_nodeEPSt13_Rb_tree_nodeIS8_E$$LSDA [0x00436e7c-0x00436e8f]
+37 _ZNSt6vectorI6edge_tSaIS0_EE9push_backERKS0_$$LSDA [0x00436e90-0x00436ea6]
+38 _ZNSt6vectorIiSaIiEE9push_backERKi$$LSDA [0x00436ea8-0x00436ebe]
+39 _ZNSt6vectorIS_I6edge_tSaIS0_EESaIS2_EED1Ev$$LSDA [0x00436ec0-0x00436ed5]
+40 _ZNSt3mapIiS_IiiSt4lessIiESaISt4pairIKiiEEES1_SaIS2_IS3_S6_EEED1Ev$$LSDA [0x00436ed8-0x00436eeb]
+41 _ZNSt8_Rb_treeIiSt4pairIKiSt3mapIiiSt4lessIiESaIS0_IS1_iEEEESt10_Select1stIS8_ES4_SaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E$$LSDA [0x00436eec-0x00436eff]
+42 _ZNSt3mapIiiSt4lessIiESaISt4pairIKiiEEED1Ev$$LSDA [0x00436f00-0x00436f13]
+43 _ZNSt6vectorIiSaIiEED1Ev$$LSDA [0x00436f14-0x00436f25]
+44 _ZNSt6vectorIiSaIiEEC1EmRKS0_$$LSDA [0x00436f28-0x00436f47]
+45 _ZNSt3mapIiiSt4lessIiESaISt4pairIKiiEEEC1Ev$$LSDA [0x00436f48-0x00436f57]
+46 _ZNSt6vectorIS_IiSaIiEESaIS1_EEC1EmRKS2_$$LSDA [0x00436f58-0x00436f6f]
+47 _ZN6CSRMat12readMMMatrixEPKc$$LSDA [0x00436f70-0x00436faf]
+48 _ZNSt6vectorI6edge_tSaIS0_EED1Ev$$LSDA [0x00436fb0-0x00436fc1]
+49 _ZNSt6vectorIS_ISt3mapIiiSt4lessIiESaISt4pairIKiiEEESaIS7_EESaIS9_EED1Ev$$LSDA [0x00436fc4-0x00436fd9]
+50 _ZN17_INTERNAL0055ec0fSt19piecewise_constructE [0x0042f3f8-0x0042f3f8]
+51 _ZN6CSRMat21createIncidenceMatrixERKS_RSt3mapIiS2_IiiSt4lessIiESaISt4pairIKiiEEES4_SaIS5_IS6_S9_EEE$$LSDA [0x00436fdc-0x0043702f]
+52 _ZNSt8_Rb_treeIiSt4pairIKiSt3mapIiiSt4lessIiESaIS0_IS1_iEEEESt10_Select1stIS8_ES4_SaIS8_EE22_M_emplace_hint_uniqueIIRKSt21piecewise_construct_tSt5tupleIIOiEESH_IIEEEEESt17_Rb_tree_iteratorIS8_ESt23_Rb_tree_const_iteratorIS8_EDpOT_$$LSDA [0x00437030-0x00437048]
+53 _ZNSt8_Rb_treeIiiSt9_IdentityIiESt4lessIiESaIiEE16_M_insert_uniqueIiEESt4pairISt17_Rb_tree_iteratorIiEbEOT_$$LSDA [0x0043704c-0x00437062]
+54 _ZNSt6vectorIiSaIiEE12emplace_backIIiEEEvDpOT_$$LSDA [0x00437064-0x0043707a]
+55 _ZNSt6vectorIiSaIiEE19_M_emplace_back_auxIIRKiEEEvDpOT_$$LSDA [0x0043707c-0x00437092]
+56 _ZNSt8_Rb_treeIiiSt9_IdentityIiESt4lessIiESaIiEE16_M_insert_uniqueIRKiEESt4pairISt17_Rb_tree_iteratorIiEbEOT_$$LSDA [0x00437094-0x004370aa]
+57 _ZNSt6vectorISt3setIiSt4lessIiESaIiEESaIS4_EED1Ev$$LSDA [0x004370ac-0x004370c1]
+58 _ZNSt3mapIiSt4listIiSaIiEESt4lessIiESaISt4pairIKiS2_EEEC1EOS9_$$LSDA [0x004370c4-0x004370d3]
+59 _ZNSt3mapIiiSt4lessIiESaISt4pairIKiiEEEC1EOS6_$$LSDA [0x004370d4-0x004370e3]
+60 _ZNSt12_Destroy_auxILb0EE9__destroyIPSt6vectorISt3mapIiSt4listIiSaIiEESt4lessIiESaISt4pairIKiS6_EEESaISD_EEEEvT_SH_$$LSDA [0x004370e4-0x004370f9]
+61 _ZNSt8_Rb_treeIiSt4pairIKiSt4listIiSaIiEEESt10_Select1stIS5_ESt4lessIiESaIS5_EE8_M_eraseEPSt13_Rb_tree_nodeIS5_E$$LSDA [0x004370fc-0x0043710f]
+62 _ZNSt12_Destroy_auxILb0EE9__destroyIPSt6vectorISt3mapIiiSt4lessIiESaISt4pairIKiiEEESaISA_EEEEvT_SE_$$LSDA [0x00437110-0x00437125]
+63 _ZNSt12_Destroy_auxILb0EE9__destroyIPSt6vectorI6edge_tSaIS3_EEEEvT_S7_$$LSDA [0x00437128-0x0043713d]
+64 _ZN17_INTERNAL0055ec0fSt8__ioinitE [0x00639dd8-0x00639dd8]
+65 _ZNSt12_Destroy_auxILb0EE9__destroyIPSt6vectorIiSaIiEEEEvT_S6_$$LSDA [0x00437140-0x00437155]
+66 _ZNSt12_Destroy_auxILb0EE9__destroyIP9CSRSubmatEEvT_S4_$$LSDA [0x00437158-0x0043716d]
+67 _ZNSt12_Destroy_auxILb0EE9__destroyIPSt3mapIiiSt4lessIiESaISt4pairIKiiEEEEEvT_SB_$$LSDA [0x00437170-0x00437183]
+68 _ZNSt12_Destroy_auxILb0EE9__destroyIPSt3setIiSt4lessIiESaIiEEEEvT_S8_$$LSDA [0x00437184-0x00437197]
+69 _ZNSt27__uninitialized_default_n_1ILb0EE18__uninit_default_nIPSt3setIiSt4lessIiESaIiEEmEEvT_T0_$$LSDA [0x00437198-0x004371ab]
+70 _ZNSt6vectorISt3mapIiiSt4lessIiESaISt4pairIKiiEEESaIS7_EE17_M_default_appendEm$$LSDA [0x004371ac-0x004371c5]
+71 _ZNSt6vectorISt3mapIiSt4listIiSaIiEESt4lessIiESaISt4pairIKiS3_EEESaISA_EE17_M_default_appendEm$$LSDA [0x004371c8-0x004371e1]
+72 _ZNSt6vectorI9CSRSubmatSaIS0_EE17_M_default_appendEm$$LSDA [0x004371e4-0x004371ff]
+73 _ZNSt6vectorIS_IiSaIiEESaIS1_EE17_M_default_appendEm$$LSDA [0x00437200-0x0043721b]
+74 _ZN5Graph17triangleEnumerateEv$$LSDA [0x0043721c-0x00437279]
+75 _ZNSt6vectorI9CSRSubmatSaIS0_EE6resizeEm$$LSDA [0x0043727c-0x00437297]
+76 _ZNSt6vectorI9CSRSubmatSaIS0_EED1Ev$$LSDA [0x00437298-0x004372ad]
+77 _ZNSt6vectorIiSaIiEED1Ev$$LSDA [0x004372b0-0x004372c1]
+78 _ZNSt10shared_ptrI6CSRMatED1Ev$$LSDA [0x004372c4-0x004372d7]
+79 _ZN6CSRMatD1Ev$$LSDA [0x004372d8-0x004372ee]
+80 _ZN6CSRMatC1EiiP19ompi_communicator_tb$$LSDA [0x004372f0-0x00437315]
+81 _ZNSt12_Vector_baseIiSaIiEED1Ev$$LSDA [0x00437318-0x00437329]
+82 _ZNK5Graph14printTrianglesEv$$LSDA [0x0043732c-0x00437349]
+83 _ZNSt4listIiSaIiEED1Ev$$LSDA [0x0043734c-0x0043735b]
+84 _ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv$$LSDA [0x0043735c-0x00437373]
+85 _ZNSt6vectorIS_IiSaIiEESaIS1_EED1Ev$$LSDA [0x00437374-0x00437389]
+86 _ZNSt15_Sp_counted_ptrIP6CSRMatLN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv$$LSDA [0x0043738c-0x004373a2]
+87 _ZNSt15_Sp_counted_ptrIP6CSRMatLN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv$$LSDA [0x004373a4-0x004373bb]
+88 _ZN17_INTERNALcdc7bbc8St8__ioinitE [0x00639ddc-0x00639ddc]
+89 _ZNSt12_Destroy_auxILb0EE9__destroyIPSt6vectorIiSaIiEEEEvT_S6_$$LSDA [0x004373bc-0x004373d1]
+90 _ZNSt12_Destroy_auxILb0EE9__destroyIP9CSRSubmatEEvT_S4_$$LSDA [0x004373d4-0x004373e9]
+91 _ZNSt6vectorI9CSRSubmatSaIS0_EE17_M_default_appendEm$$LSDA [0x004373ec-0x00437407]
+92 _ZNSt6vectorIS_IiSaIiEESaIS1_EE17_M_default_appendEm$$LSDA [0x00437408-0x00437423]
+93 _Z23buildDistEdgeListFromMMPKciiRiS1_S1_RSt6vectorI6edge_tSaIS3_EE$$LSDA [0x00437424-0x0043743a]
+94 _ZN17_INTERNAL3796af77St8__ioinitE [0x00639de0-0x00639de0]
+95 _Z18mm_typecode_to_strPc$$LSDA [0x0043743c-0x00437472]
+96 _Z16mm_write_mtx_crdPciiiPiS0_PdS_$$LSDA [0x00437474-0x004374ae]
+97 _ZN17_INTERNAL35533b01St8__ioinitE [0x00639de4-0x00639de4]
+98 __tbl2 [0x0042f940-0x0042fa3f]
+99 __tbl [0x0042fa40-0x0042fc3f]
+100 __tbl2 [0x0042fc40-0x0042fd3f]
+101 __tbl [0x0042fd40-0x0042ff3f]
+102 message_catalog [0x0063a200-0x0063a207]
+103 get_msg_buf [0x00639e00-0x00639fff]
+104 print_buf [0x0063a000-0x0063a1ff]
+105 __libirc_cache_tbl [0x0063a220-0x0063a25f]
+106 __libirc_tmp [0x0063a260-0x0063a263]
+107 __FRAME_END__ [0x00436a0c-0x00436a0b]
+108 __GNU_EH_FRAME_HDR [0x00431d60-0x00431d5f]
+109 __intel_cpu_feature_indicator_x [0x00639df8-0x00639dff]
+110 __intel_cpu_feature_indicator [0x00639df0-0x00639df7]
+111 __libirc_zero_vec [0x004302c0-0x004302cf]
+112 ompi_mpi_op_sum [0x00638c20-0x0063941f]
+113 stdout@@GLIBC_2.2.5 [0x00639420-0x00639427]
+114 _ZNSs4_Rep20_S_empty_rep_storageE@@GLIBCXX_3.4 [0x00639440-0x0063945f]
+115 __libirc_vector5a41 [0x00430340-0x0043034f]
+116 _IO_stdin_used [0x0042f340-0x0042f343]
+117 ompi_mpi_comm_world [0x00639460-0x0063985f]
+118 __libirc_byte_factor [0x00430310-0x0043031f]
+119 __libirc_byte_factor_64 [0x004302d0-0x004302df]
+120 __svml_feature_flag [0x00639de8-0x00639deb]
+121 __libirc_mem_ops_method [0x0063a264-0x0063a267]
+122 stdin@@GLIBC_2.2.5 [0x00639860-0x00639867]
+123 __libirc_vector5b [0x00430380-0x0043038f]
+124 __libirc_excess_vecs [0x004301a0-0x0043029f]
+125 __libirc_factors_64 [0x00430120-0x0043015f]
+126 __libirc_word_factor [0x00430320-0x0043032f]
+127 __libirc_qword_factor_64 [0x00430300-0x0043030f]
+128 _ZSt4cout@@GLIBCXX_3.4 [0x00639880-0x0063998f]
+129 __libirc_factors [0x00430160-0x0043019f]
+130 ompi_mpi_int [0x006399a0-0x00639b9f]
+131 stderr@@GLIBC_2.2.5 [0x00639ba0-0x00639ba7]
+132 __libirc_vector7b [0x004303a0-0x004303af]
+133 __libirc_vector7a61 [0x00430350-0x0043035f]
+134 _end [0x0063a280-0x0063a27f]
+135 ompi_request_null [0x00639bc0-0x00639cbf]
+136 __bss_start [0x00638c20-0x00638c1f]
+137 __libirc_vector20 [0x00430360-0x0043036f]
+138 __libirc_vector40 [0x00430370-0x0043037f]
+139 __libirc_dword_factor_64 [0x004302f0-0x004302ff]
+140 __libirc_largest_cachelinesize [0x0063a268-0x0063a26b]
+141 __libirc_dig_range_vec [0x004302b0-0x004302bf]
+142 __libirc_word_factor_64 [0x004302e0-0x004302ef]
+143 __libirc_dword_factor [0x00430330-0x0043033f]
+144 __libirc_vector60 [0x00430390-0x0043039f]
+145 _ZSt4cerr@@GLIBCXX_3.4 [0x00639cc0-0x00639dcf]
+146 __libirc_spaces_vec [0x004302a0-0x004302af]
+
+EVENT_TYPE
+9    40000018    Tracing mode:
+VALUES
+1      Detailed
+2      CPU Bursts
+
+
