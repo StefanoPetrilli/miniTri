@@ -1,0 +1,11 @@
+#!/bin/bash
+
+sshpass -p "$MN_PSW" \
+    rsync -avz --exclude='*.o' \
+    --exclude='*.a' \
+    --exclude='*.exe' \
+    --exclude='.git/' \
+    ../ \
+    "$MN_USR"@"$MN_DT":/home/nct01/"$MN_USR"/bin/miniTri
+
+
