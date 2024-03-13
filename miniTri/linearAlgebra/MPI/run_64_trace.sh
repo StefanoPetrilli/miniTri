@@ -5,6 +5,7 @@
 #SBATCH --ntasks=64
 #SBATCH --time=00-00:10:00
 #SBATCH --constraint=highmem
+#SBATCH --constraint=perfparanoid
 
 source ./vars.sh
 
