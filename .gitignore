@@ -3,3 +3,7 @@
 *.a
 *.err
 *.out
+pptm-hw-1/traces/4
+pptm-hw-1/traces/16
+pptm-hw-1/traces/32
+pptm-hw-1/traces/64
