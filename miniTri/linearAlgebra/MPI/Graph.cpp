@@ -1,12 +1,12 @@
 //@HEADER
 // ************************************************************************
-// 
+//
 //                        miniTri v. 1.0
 //              Copyright (2016) Sandia Corporation
-// 
+//
 // Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 // the U.S. Government retains certain rights in this software.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -36,55 +36,51 @@
 //
 // Questions? Contact  Jon Berry (jberry@sandia.gov)
 //                     Michael Wolf (mmwolf@sandia.gov)
-// 
+//
 // ************************************************************************
 //@HEADER
 
 //////////////////////////////////////////////////////////////////////////////
 //                                                                          //
 // File:      Graph.cc                                                      //
-// Project:   miniTri                                                       //   
+// Project:   miniTri                                                       //
 // Author:    Michael Wolf                                                  //
 //                                                                          //
 // Description:                                                             //
 //              Source file for graph class.                                //
 //////////////////////////////////////////////////////////////////////////////
+#include <cassert>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <vector>
 #include <list>
 #include <map>
 #include <set>
-#include <cassert>
-#include <cstdlib>
 #include <sys/time.h>
+#include <vector>
 
 #include "Graph.hpp"
 #include "mmio.h"
 
-
 //////////////////////////////////////////////////////////////////////////////
 // Enumerate triangles in graph
 //////////////////////////////////////////////////////////////////////////////
-void Graph::triangleEnumerate()
-{
+void Graph::triangleEnumerate() {
   struct timeval t1, t2;
   double eTime;
 
-  if(mMyRank==0)
-  {
+  if (mMyRank == 0) {
     std::cout << "************************************************************"
               << "**********" << std::endl;
     std::cout << "Enumerating triangles ....." << std::endl;
-    std::cout << "************************************************************" 
+    std::cout << "************************************************************"
               << "**********" << std::endl;
   }
 
   ///////////////////////////////////////////////////////////////////////
   // Form B
   ///////////////////////////////////////////////////////////////////////
-  if(mMyRank==0)
-  {
+  if (mMyRank == 0) {
     std::cout << "--------------------" << std::endl;
     std::cout << "Creating incidence matrix B...";
   }
@@ -92,21 +88,20 @@ void Graph::triangleEnumerate()
   gettimeofday(&t1, NULL);
 
   CSRMat B(mComm);
-  B.createIncidenceMatrix(mMatrix,mEdgeIndices);
+  B.createIncidenceMatrix(mMatrix, mEdgeIndices);
 
   gettimeofday(&t2, NULL);
 
-  if(mMyRank==0)
-  {
-    std::cout << " done" <<std::endl;
+  if (mMyRank == 0) {
+    std::cout << " done" << std::endl;
   }
 
-  //mMatrix.print();
-  //B.print();
+  // mMatrix.print();
+  // B.print();
 
-  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec-t1.tv_usec)/1000000.0);
+  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec - t1.tv_usec) / 1000000.0);
 
-  if(mMyRank==0) //perhaps should report max time
+  if (mMyRank == 0) // perhaps should report max time
   {
     std::cout << "TIME - Time to create B: " << eTime << std::endl;
 
@@ -117,26 +112,25 @@ void Graph::triangleEnumerate()
   ///////////////////////////////////////////////////////////////////////
   // C = A*B
   ///////////////////////////////////////////////////////////////////////
-  if(mMyRank==0)
-  {
+  if (mMyRank == 0) {
     std::cout << "--------------------" << std::endl;
     std::cout << "C = A*B: " << std::endl;
   }
 
-  std::shared_ptr<CSRMat> C(new CSRMat(mMatrix.getGlobNumRows(),B.getGlobNumCols(),mComm,true));
+  std::shared_ptr<CSRMat> C(
+      new CSRMat(mMatrix.getGlobNumRows(), B.getGlobNumCols(), mComm, true));
 
   MPI_Barrier(mComm);
   gettimeofday(&t1, NULL);
-  C->matmat(mMatrix,B);
+  C->matmat(mMatrix, B);
   MPI_Barrier(mComm);
   gettimeofday(&t2, NULL);
 
-  //C->print();
+  // C->print();
 
-  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec-t1.tv_usec)/1000000.0);
+  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec - t1.tv_usec) / 1000000.0);
 
-  if(mMyRank==0)
-  {
+  if (mMyRank == 0) {
     std::cout << "TIME - Time to compute C = L*B: " << eTime << std::endl;
     std::cout << "--------------------" << std::endl;
     std::cout << "NNZ: " << C->getGlobNNZ() << std::endl;
@@ -146,32 +140,29 @@ void Graph::triangleEnumerate()
   ///////////////////////////////////////////////////////////////////////
 
   ///////////////////////////////////////////////////////////////////////
-  // Save triangle information                                           
+  // Save triangle information
   ///////////////////////////////////////////////////////////////////////
   mTriMat = C;
   ///////////////////////////////////////////////////////////////////////
 
-  if(mMyRank==0)
-  {
+  if (mMyRank == 0) {
     std::cout << "************************************************************"
               << "**********" << std::endl;
     std::cout << "Finished triangle enumeration" << std::endl;
-    std::cout << "************************************************************" 
+    std::cout << "************************************************************"
               << "**********" << std::endl;
   }
 }
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-// Calculate triangle degrees                                                 
+// Calculate triangle degrees
 //////////////////////////////////////////////////////////////////////////////
-void Graph::calculateTriangleDegrees()
-{
+void Graph::calculateTriangleDegrees() {
   struct timeval t1, t2;
   double eTime;
 
-  if(mMyRank==0)
-  {
+  if (mMyRank == 0) {
     std::cout << "************************************************************"
               << "**********" << std::endl;
     std::cout << "Calculating triangle degrees ....." << std::endl;
@@ -180,11 +171,10 @@ void Graph::calculateTriangleDegrees()
   }
 
   ///////////////////////////////////////////////////////////////////////
-  // Compute triangle vertex degrees                                     
-  //     dv = C * 1                                                      
+  // Compute triangle vertex degrees
+  //     dv = C * 1
   ///////////////////////////////////////////////////////////////////////
-  if(mMyRank==0)
-  {
+  if (mMyRank == 0) {
     std::cout << "--------------------" << std::endl;
     std::cout << "Computing triangle vertex degrees ...";
   }
@@ -193,29 +183,28 @@ void Graph::calculateTriangleDegrees()
   mVTriDegrees.resize(mTriMat->getLocNumRows());
 
   mTriMat->SpMV1(false, mVTriDegrees);
-  //mVTriDegrees.Print();
+  // mVTriDegrees.Print();
 
   gettimeofday(&t2, NULL);
 
-  if(mMyRank==0)
-  {
-    std::cout << " done" <<std::endl;
+  if (mMyRank == 0) {
+    std::cout << " done" << std::endl;
   }
 
-  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec-t1.tv_usec)/1000000.0);
+  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec - t1.tv_usec) / 1000000.0);
 
-  if(mMyRank==0) // perhaps should take max here
+  if (mMyRank == 0) // perhaps should take max here
   {
-    std::cout << "TIME - Time to compute vertex degrees: " << eTime << std::endl;
+    std::cout << "TIME - Time to compute vertex degrees: " << eTime
+              << std::endl;
   }
   ///////////////////////////////////////////////////////////////////////
 
   ///////////////////////////////////////////////////////////////////////
-  // Compute triangle edge degrees                                       
-  //     de = C' * 1                                                     
+  // Compute triangle edge degrees
+  //     de = C' * 1
   ///////////////////////////////////////////////////////////////////////
-  if(mMyRank==0)
-  {
+  if (mMyRank == 0) {
     std::cout << "--------------------" << std::endl;
     std::cout << "Computing triangle edge degrees ...";
   }
@@ -224,67 +213,58 @@ void Graph::calculateTriangleDegrees()
 
   mETriDegrees.resize(mTriMat->getLocNumRangeIDs());
   mTriMat->SpMV1(true, mETriDegrees);
-  //mETriDegrees.Print();
+  // mETriDegrees.Print();
 
   gettimeofday(&t2, NULL);
 
-
-  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec-t1.tv_usec)/1000000.0);
-  if(mMyRank==0)
-  {
-    std::cout << " done" <<std::endl;
+  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec - t1.tv_usec) / 1000000.0);
+  if (mMyRank == 0) {
+    std::cout << " done" << std::endl;
     std::cout << "TIME - Time to compute edge degrees: " << eTime << std::endl;
   }
   ///////////////////////////////////////////////////////////////////////
 
-  if(mMyRank==0)
-  {
+  if (mMyRank == 0) {
     std::cout << "************************************************************"
               << "**********" << std::endl;
     std::cout << "Finished calculating triangle degrees" << std::endl;
     std::cout << "************************************************************"
               << "**********" << std::endl;
   }
-
 }
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
 // Prints triangles in graph
 //////////////////////////////////////////////////////////////////////////////
-void Graph::printTriangles() const
-{
+void Graph::printTriangles() const {
   std::cout << "Triangles: " << std::endl;
 
   std::list<int> triangles = mTriMat->getSumElements();
 
-  //Iterate through list and output triangles
+  // Iterate through list and output triangles
   std::list<int>::const_iterator iter;
-  for (iter=triangles.begin(); iter!=triangles.end(); iter++)
-    {
-      int v1 = *iter+1;
-      iter++;
-      int v2 = *iter+1;
-      iter++;
-      int v3 = *iter+1;
+  for (iter = triangles.begin(); iter != triangles.end(); iter++) {
+    int v1 = *iter + 1;
+    iter++;
+    int v2 = *iter + 1;
+    iter++;
+    int v3 = *iter + 1;
 
-      if(v1>v2 && v1>v3)
-        {
-	  std::cout << "(" << v1;
-	  std::cout << ", " << v2;
-	  std::cout << ", " << v3 << ")" << std::endl;
-        }
+    if (v1 > v2 && v1 > v3) {
+      std::cout << "(" << v1;
+      std::cout << ", " << v2;
+      std::cout << ", " << v3 << ")" << std::endl;
     }
+  }
 }
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-// Calculate Kcounts                                                          
+// Calculate Kcounts
 //////////////////////////////////////////////////////////////////////////////
-void Graph::calculateKCounts()
-{
-  if(mMyRank==0)
-  {
+void Graph::calculateKCounts() {
+  if (mMyRank == 0) {
     std::cout << "************************************************************"
               << "**********" << std::endl;
     std::cout << "Calculating K-counts ....." << std::endl;
@@ -292,10 +272,9 @@ void Graph::calculateKCounts()
               << "**********" << std::endl;
   }
 
-  mTriMat->computeKCounts(mVTriDegrees,mETriDegrees,mEdgeIndices,mKCounts);
+  mTriMat->computeKCounts(mVTriDegrees, mETriDegrees, mEdgeIndices, mKCounts);
 
-  if(mMyRank==0)
-  {
+  if (mMyRank == 0) {
     std::cout << "************************************************************"
               << "**********" << std::endl;
     std::cout << "Finished calculating K-counts" << std::endl;
@@ -306,18 +285,14 @@ void Graph::calculateKCounts()
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-// Print kcounts                                                              
+// Print kcounts
 //////////////////////////////////////////////////////////////////////////////
-void Graph::printKCounts()
-{
-  if(mMyRank==0)
-  {
+void Graph::printKCounts() {
+  if (mMyRank == 0) {
     std::cout << "K-Counts: " << std::endl;
-    for(unsigned int i=3; i<mKCounts.size(); i++)
-    {
-      std::cout << "K[" << i << "] = " <<mKCounts[i] << std::endl;
+    for (unsigned int i = 3; i < mKCounts.size(); i++) {
+      std::cout << "K[" << i << "] = " << mKCounts[i] << std::endl;
     }
   }
 }
 //////////////////////////////////////////////////////////////////////////////
-

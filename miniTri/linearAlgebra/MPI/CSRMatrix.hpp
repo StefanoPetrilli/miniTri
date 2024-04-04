@@ -1,12 +1,12 @@
 //@HEADER
 // ************************************************************************
-// 
+//
 //                        miniTri v. 1.0
 //              Copyright (2016) Sandia Corporation
-// 
+//
 // Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 // the U.S. Government retains certain rights in this software.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -36,7 +36,7 @@
 //
 // Questions? Contact  Jon Berry (jberry@sandia.gov)
 //                     Michael Wolf (mmwolf@sandia.gov)
-// 
+//
 // ************************************************************************
 //@HEADER
 
@@ -53,11 +53,11 @@
 #ifndef CSRMATRIX_H
 #define CSRMATRIX_H
 
-typedef enum {UNDEFINED,LOWERTRI,UPPERTRI} matrixtype;
+typedef enum { UNDEFINED, LOWERTRI, UPPERTRI } matrixtype;
 
 #include <list>
-#include <vector>
 #include <map>
+#include <vector>
 
 #include <mpi.h>
 
@@ -65,30 +65,25 @@ typedef enum {UNDEFINED,LOWERTRI,UPPERTRI} matrixtype;
 
 class Vector;
 
-
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-struct CSRSubmat
-{
-  std::vector<std::vector<int> > cols;  //columns of nonzeros                                
-  std::vector<std::vector<int> > vals;  //values of nonzeros                                 
-  std::vector<std::vector<int> > vals2; //values of nonzeros                                 
+struct CSRSubmat {
+  std::vector<std::vector<int>> cols;  // columns of nonzeros
+  std::vector<std::vector<int>> vals;  // values of nonzeros
+  std::vector<std::vector<int>> vals2; // values of nonzeros
 };
 //////////////////////////////////////////////////////////////////////////////
-
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Compressed Sparse Row storage format Matrix
 //////////////////////////////////////////////////////////////////////////////
-class CSRMat 
-{
+class CSRMat {
 
- private:
+private:
   matrixtype type;
-  int mGlobNumRows;   //number of global rows
-  int mGlobNumCols;   //number of global cols
-  int mGlobNNZ;       //number of global nonzeros
+  int mGlobNumRows; // number of global rows
+  int mGlobNumCols; // number of global cols
+  int mGlobNNZ;     // number of global nonzeros
   int mLocNumRows;
   int mLocNNZ;
   int mStartRow;
@@ -103,17 +98,15 @@ class CSRMat
   int mWorldSize;
   int mMyRank;
 
-
- public:
+public:
   //////////////////////////////////////////////////////////////////////////
   // default constructor -- builds empty matrix
   //////////////////////////////////////////////////////////////////////////
-  CSRMat(MPI_Comm _comm=MPI_COMM_WORLD) 
-    :type(UNDEFINED),mGlobNumRows(0),mGlobNumCols(0),mGlobNNZ(0),mLocNumRows(0),
-     mLocNNZ(0), mComm(_comm)
-  {
-    MPI_Comm_size(mComm,&mWorldSize);
-    MPI_Comm_rank(mComm,&mMyRank);
+  CSRMat(MPI_Comm _comm = MPI_COMM_WORLD)
+      : type(UNDEFINED), mGlobNumRows(0), mGlobNumCols(0), mGlobNNZ(0),
+        mLocNumRows(0), mLocNNZ(0), mComm(_comm) {
+    MPI_Comm_size(mComm, &mWorldSize);
+    MPI_Comm_rank(mComm, &mMyRank);
 
     mStartRowOnProc.resize(mWorldSize);
     mSubmat.resize(mWorldSize);
@@ -125,12 +118,11 @@ class CSRMat
   //////////////////////////////////////////////////////////////////////////
   // Constructor that accepts matrix type as an argument
   //////////////////////////////////////////////////////////////////////////
-  CSRMat(matrixtype _type,MPI_Comm _comm=MPI_COMM_WORLD) 
-    :type(_type),mGlobNumRows(0),mGlobNumCols(0),mGlobNNZ(0),mLocNumRows(0), 
-     mLocNNZ(0), mComm(_comm)
-  {
-    MPI_Comm_size(mComm,&mWorldSize);
-    MPI_Comm_rank(mComm,&mMyRank);
+  CSRMat(matrixtype _type, MPI_Comm _comm = MPI_COMM_WORLD)
+      : type(_type), mGlobNumRows(0), mGlobNumCols(0), mGlobNNZ(0),
+        mLocNumRows(0), mLocNNZ(0), mComm(_comm) {
+    MPI_Comm_size(mComm, &mWorldSize);
+    MPI_Comm_rank(mComm, &mMyRank);
 
     mStartRowOnProc.resize(mWorldSize);
     mSubmat.resize(mWorldSize);
@@ -142,26 +134,22 @@ class CSRMat
   //////////////////////////////////////////////////////////////////////////
   // constructor -- allocates memory for CSR sparse matrix
   //////////////////////////////////////////////////////////////////////////
-  CSRMat(int _m, int _n, MPI_Comm _comm, bool allocateVals2=false)
-    :type(UNDEFINED),mGlobNumRows(_m),mGlobNumCols(_n),mGlobNNZ(0),
-     mComm(_comm)
-  {
-    MPI_Comm_size(mComm,&mWorldSize);
-    MPI_Comm_rank(mComm,&mMyRank);
+  CSRMat(int _m, int _n, MPI_Comm _comm, bool allocateVals2 = false)
+      : type(UNDEFINED), mGlobNumRows(_m), mGlobNumCols(_n), mGlobNNZ(0),
+        mComm(_comm) {
+    MPI_Comm_size(mComm, &mWorldSize);
+    MPI_Comm_rank(mComm, &mMyRank);
 
-    partitionMatrix(mGlobNumRows,mWorldSize,mMyRank,mLocNumRows,mStartRow);
+    partitionMatrix(mGlobNumRows, mWorldSize, mMyRank, mLocNumRows, mStartRow);
 
     mSubmat.resize(mWorldSize);
-    for(int submatNum=0;submatNum<mWorldSize;submatNum++)
-    {
+    for (int submatNum = 0; submatNum < mWorldSize; submatNum++) {
       mSubmat[submatNum].cols.resize(mLocNumRows);
       mSubmat[submatNum].vals.resize(mLocNumRows);
 
-      if(allocateVals2==true)
-      {
+      if (allocateVals2 == true) {
         mSubmat[submatNum].vals.resize(mLocNumRows);
       }
-
     }
 
     mStartRowOnProc.resize(mWorldSize);
@@ -171,33 +159,28 @@ class CSRMat
     //////////////////////////////////////////////////////////////////////
     // Sets values for mStartRowOnProc
     //////////////////////////////////////////////////////////////////////
-    for(int rank=0; rank<mWorldSize; rank++)
-    {
+    for (int rank = 0; rank < mWorldSize; rank++) {
       int numrows;
-      partitionMatrix(mGlobNumRows,mWorldSize,rank,
-	  	      numrows,mStartRowOnProc[rank]);
+      partitionMatrix(mGlobNumRows, mWorldSize, rank, numrows,
+                      mStartRowOnProc[rank]);
     }
     //////////////////////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////////////////////
-    // Sets values for mSubmatStartCols,mSubmatNumCols                                        
+    // Sets values for mSubmatStartCols,mSubmatNumCols
     //////////////////////////////////////////////////////////////////////
-    for(int rank=0; rank<mWorldSize; rank++)
-    {
-      partitionMatrix(mGlobNumCols,mWorldSize,rank,
-	  	      mSubmatNumCols[rank],mSubmatStartCols[rank]);
+    for (int rank = 0; rank < mWorldSize; rank++) {
+      partitionMatrix(mGlobNumCols, mWorldSize, rank, mSubmatNumCols[rank],
+                      mSubmatStartCols[rank]);
     }
     //////////////////////////////////////////////////////////////////////
-
   };
   //////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////
   // destructor -- deletes matrix
   //////////////////////////////////////////////////////////////////////////
-  ~CSRMat()
-  {
-  };
+  ~CSRMat(){};
   //////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////
@@ -222,51 +205,47 @@ class CSRMat
   //////////////////////////////////////////////////////////////////
 
   // returns the global number of rows
-  int getGlobNumRows() const { return mGlobNumRows;};
+  int getGlobNumRows() const { return mGlobNumRows; };
 
   // returns the global number of cols
-  int getGlobNumCols() const { return mGlobNumCols;};
+  int getGlobNumCols() const { return mGlobNumCols; };
 
   // returns the global number of cols
-  int getGlobNNZ() const { return mGlobNNZ;};
+  int getGlobNNZ() const { return mGlobNNZ; };
 
   // returns the local number of cols
-  int getLocNumRows() const { return mLocNumRows;};
+  int getLocNumRows() const { return mLocNumRows; };
 
   // returns the start row
-  int getStartRow() const { return mStartRow;};
+  int getStartRow() const { return mStartRow; };
 
   // returns local number of range elements
-  int getLocNumRangeIDs() const 
-  {
-    return mSubmatNumCols[mMyRank];
-  }
+  int getLocNumRangeIDs() const { return mSubmatNumCols[mMyRank]; }
 
   // returns NNZ in row rnum
-  inline int getNNZInRow(int submatNum, int rnum) const
-  {return mSubmat[submatNum].cols[rnum].size();};
+  inline int getNNZInRow(int submatNum, int rnum) const {
+    return mSubmat[submatNum].cols[rnum].size();
+  };
 
   // returns column # for nonzero in row rowi at index nzindx
-  inline int getCol(int submatNum, int rowi, int nzindx) const
-  {return mSubmat[submatNum].cols[rowi][nzindx];};
+  inline int getCol(int submatNum, int rowi, int nzindx) const {
+    return mSubmat[submatNum].cols[rowi][nzindx];
+  };
 
-  inline const CSRSubmat & getSubMatrix(int submatNum) const
-  { return mSubmat[submatNum]; }
-
+  inline const CSRSubmat &getSubMatrix(int submatNum) const {
+    return mSubmat[submatNum];
+  }
 
   // returns true if row is on this process
-  inline bool rowOnProc(int rowi) const
-  {
-    if(rowi >= mStartRow && rowi < mStartRow+mLocNumRows)
-    {
+  inline bool rowOnProc(int rowi) const {
+    if (rowi >= mStartRow && rowi < mStartRow + mLocNumRows) {
       return true;
     }
     return false;
   }
 
-  int  whichSubMatrix(int colID);
-  int  rowOnWhichProc(int rowID);
-
+  int whichSubMatrix(int colID);
+  int rowOnWhichProc(int rowID);
 
   //////////////////////////////////////////////////////////////////
 
@@ -279,15 +258,15 @@ class CSRMat
   //////////////////////////////////////////////////////////////////
 
   void computeKCounts(const Vector &vTriDegrees, const Vector &eTriDegrees,
-                      std::map<int,std::map<int,int> > & edgeInds,
+                      std::map<int, std::map<int, int>> &edgeInds,
                       std::vector<int> &kCounts);
 
-  void readMMMatrix(const char* fname);
-  void readBinMatrix(const char* fname);
+  void readMMMatrix(const char *fname);
+  void readBinMatrix(const char *fname);
 
-  void createIncidenceMatrix(const CSRMat &matrix, std::map<int,std::map<int,int> > & eIndices);
+  void createIncidenceMatrix(const CSRMat &matrix,
+                             std::map<int, std::map<int, int>> &eIndices);
   //////////////////////////////////////////////////////////////////////////
-
 };
 //////////////////////////////////////////////////////////////////////////////
 

@@ -1,12 +1,12 @@
 //@HEADER
 // ************************************************************************
-// 
+//
 //                        miniTri v. 1.0
 //              Copyright (2016) Sandia Corporation
-// 
+//
 // Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 // the U.S. Government retains certain rights in this software.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -36,14 +36,14 @@
 //
 // Questions? Contact  Jon Berry (jberry@sandia.gov)
 //                     Michael Wolf (mmwolf@sandia.gov)
-// 
+//
 // ************************************************************************
 //@HEADER
 
 //////////////////////////////////////////////////////////////////////////////
 //                                                                          //
 // File:      Graph.h                                                       //
-// Project:   miniTri                                                       //  
+// Project:   miniTri                                                       //
 // Author:    Michael Wolf                                                  //
 //                                                                          //
 // Description:                                                             //
@@ -53,11 +53,11 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include <list>
-#include <vector>
-#include <map>
 #include <cmath>
+#include <list>
+#include <map>
 #include <memory>
+#include <vector>
 
 #include "CSRMatrix.hpp"
 #include "Vector.hpp"
@@ -65,10 +65,9 @@
 //////////////////////////////////////////////////////////////////////////////
 // Graph class
 //////////////////////////////////////////////////////////////////////////////
-class Graph 
-{
+class Graph {
 
- private:
+private:
   std::string mFilename;
 
   int mNumVerts;
@@ -78,7 +77,7 @@ class Graph
   int mNumTriangles;
   std::shared_ptr<CSRMat> mTriMat;
 
-  std::map<int,std::map<int,int> > mEdgeIndices;
+  std::map<int, std::map<int, int>> mEdgeIndices;
 
   Vector mVTriDegrees;
   Vector mETriDegrees;
@@ -91,59 +90,51 @@ class Graph
   int mMyRank;
   int mWorldSize;
 
- public:
+public:
   //////////////////////////////////////////////////////////////////////////
   // default constructor -- builds empty graph
   //////////////////////////////////////////////////////////////////////////
-  Graph() 
-    :mFilename("UNDEFINED"),mNumVerts(0),mMatrix(MPI_COMM_WORLD), mNumTriangles(0), mTriMat(),
-     mVTriDegrees(MPI_COMM_WORLD),mETriDegrees(MPI_COMM_WORLD),
-     mComm(MPI_COMM_WORLD)
-  {
-    MPI_Comm_rank(mComm,&mMyRank);
-    MPI_Comm_size(mComm,&mWorldSize);
+  Graph()
+      : mFilename("UNDEFINED"), mNumVerts(0), mMatrix(MPI_COMM_WORLD),
+        mNumTriangles(0), mTriMat(), mVTriDegrees(MPI_COMM_WORLD),
+        mETriDegrees(MPI_COMM_WORLD), mComm(MPI_COMM_WORLD) {
+    MPI_Comm_rank(mComm, &mMyRank);
+    MPI_Comm_size(mComm, &mWorldSize);
   };
   //////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////
   // Constructor that accepts matrix type as an argument
   //////////////////////////////////////////////////////////////////////////
-  Graph(std::string _fname,bool binFile,MPI_Comm _comm) 
-    :mFilename(_fname),mMatrix(_comm), mNumTriangles(0), mTriMat(), 
-     mVTriDegrees(_comm), mETriDegrees(_comm), mComm(_comm)
-  {
-    MPI_Comm_rank(mComm,&mMyRank);
-    MPI_Comm_size(mComm,&mWorldSize);
+  Graph(std::string _fname, bool binFile, MPI_Comm _comm)
+      : mFilename(_fname), mMatrix(_comm), mNumTriangles(0), mTriMat(),
+        mVTriDegrees(_comm), mETriDegrees(_comm), mComm(_comm) {
+    MPI_Comm_rank(mComm, &mMyRank);
+    MPI_Comm_size(mComm, &mWorldSize);
 
-    if(binFile==false)
-    {
+    if (binFile == false) {
       mMatrix.readMMMatrix(mFilename.c_str());
-    }
-    else
-    {
+    } else {
       //      mMatrix.readBinMatrix(mFilename.c_str());
     }
 
     mNumVerts = mMatrix.getGlobNumRows();
-    mNumEdges = mMatrix.getGlobNNZ()/2;
+    mNumEdges = mMatrix.getGlobNNZ() / 2;
 
-    int countSize = (int) sqrt(mNumVerts);
-    if(countSize < 10)
-    {
+    int countSize = (int)sqrt(mNumVerts);
+    if (countSize < 10) {
       countSize = 10;
     }
-    mKCounts.resize(countSize,0);
+    mKCounts.resize(countSize, 0);
 
-    //mMatrix.print();
+    // mMatrix.print();
   };
   //////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////
   // destructor -- deletes matrix
   //////////////////////////////////////////////////////////////////////////
-  ~Graph()
-  {
-  };
+  ~Graph(){};
   //////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////
@@ -159,10 +150,9 @@ class Graph
   void calculateKCounts();
 
   void printTriangles() const;
-  int getNumTriangles() const {return mNumTriangles;};
+  int getNumTriangles() const { return mNumTriangles; };
 
   void printKCounts();
-
 };
 //////////////////////////////////////////////////////////////////////////////
 

@@ -1,12 +1,12 @@
 //@HEADER
 // ************************************************************************
-// 
+//
 //                        miniTri v. 1.0
 //              Copyright (2016) Sandia Corporation
-// 
+//
 // Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 // the U.S. Government retains certain rights in this software.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -36,7 +36,7 @@
 //
 // Questions? Contact  Jon Berry (jberry@sandia.gov)
 //                     Michael Wolf (mmwolf@sandia.gov)
-// 
+//
 // ************************************************************************
 //@HEADER
 
@@ -50,19 +50,17 @@
 //              Driver for miniTri                                          //
 //                                                                          //
 //////////////////////////////////////////////////////////////////////////////
-#include <iostream>
-#include <cstdlib>
 #include <cassert>
+#include <cstdlib>
+#include <iostream>
 #include <omp.h>
 
 #include "Graph.h"
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-int main(int argc, char *argv[])
-{
-  if(argc!=3)
-  {
+int main(int argc, char *argv[]) {
+  if (argc != 3) {
     std::cerr << "Usage: triangleEnumerate mat.mtx numThreads" << std::endl;
     exit(1);
   }
@@ -78,11 +76,9 @@ int main(int argc, char *argv[])
   g.calculateTriangleDegrees();
   g.calculateKCounts();
 
-
   std::cout << "Number of Triangles: " << g.getNumTriangles() << std::endl;
-  //g.printTriangles();
+  // g.printTriangles();
 
   g.printKCounts();
 }
 //////////////////////////////////////////////////////////////////////////////
-

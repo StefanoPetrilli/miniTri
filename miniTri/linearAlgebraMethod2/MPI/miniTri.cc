@@ -1,12 +1,12 @@
 //@HEADER
 // ************************************************************************
-// 
+//
 //                        miniTri v. 1.0
 //              Copyright (2016) Sandia Corporation
-// 
+//
 // Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 // the U.S. Government retains certain rights in this software.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -36,7 +36,7 @@
 //
 // Questions? Contact  Jon Berry (jberry@sandia.gov)
 //                     Michael Wolf (mmwolf@sandia.gov)
-// 
+//
 // ************************************************************************
 //@HEADER
 
@@ -50,46 +50,43 @@
 //              Enumerates triangles in graphs                              //
 //                                                                          //
 //////////////////////////////////////////////////////////////////////////////
-#include <iostream>
-#include <cstdlib>
 #include <cassert>
+#include <cstdlib>
+#include <iostream>
 #include <mpi.h>
 
 #include "Graph.h"
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-int main(int argc, char *argv[])
-{
-  MPI_Init(&argc,&argv);
+int main(int argc, char *argv[]) {
+  MPI_Init(&argc, &argv);
 
-  if(argc!=2)
-  {
+  if (argc != 2) {
     std::cerr << "Usage: triangleEnumerate mat.mtx" << std::endl;
     exit(1);
   }
 
   int myrank;
-  MPI_Comm_rank(MPI_COMM_WORLD,&myrank);
+  MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
 
   std::string mat = argv[1];
 
-  Graph g(mat,MPI_COMM_WORLD);
+  Graph g(mat, MPI_COMM_WORLD);
   g.triangleEnumerate();
   g.orderTriangles();
   g.calculateTriangleDegrees();
   g.calculateKCounts();
 
-  if(myrank==0)
-    std::cout << "Number of Triangles: " << g.getGlobNumTriangles() << std::endl;
-  //g.printTriangles();
+  if (myrank == 0)
+    std::cout << "Number of Triangles: " << g.getGlobNumTriangles()
+              << std::endl;
+  // g.printTriangles();
 
-  if(myrank==0)
-  {
+  if (myrank == 0) {
     g.printKCounts();
   }
 
   MPI_Finalize();
 }
 //////////////////////////////////////////////////////////////////////////////
-

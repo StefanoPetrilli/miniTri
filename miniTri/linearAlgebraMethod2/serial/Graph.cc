@@ -1,12 +1,12 @@
 //@HEADER
 // ************************************************************************
-// 
+//
 //                        miniTri v. 1.0
 //              Copyright (2016) Sandia Corporation
-// 
+//
 // Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 // the U.S. Government retains certain rights in this software.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -36,7 +36,7 @@
 //
 // Questions? Contact  Jon Berry (jberry@sandia.gov)
 //                     Michael Wolf (mmwolf@sandia.gov)
-// 
+//
 // ************************************************************************
 //@HEADER
 
@@ -48,34 +48,33 @@
 // Description:                                                             //
 //              Source file for graph class.                                //
 //////////////////////////////////////////////////////////////////////////////
+#include <cassert>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <vector>
 #include <list>
 #include <map>
 #include <set>
-#include <cassert>
-#include <cstdlib>
 #include <sys/time.h>
+#include <vector>
 
 #include "Graph.h"
-#include "util.h"
 #include "mmio.h"
+#include "util.h"
 
 unsigned int choose2(unsigned int k);
 
 //////////////////////////////////////////////////////////////////////////////
 // Enumerate triangles in graph
 //////////////////////////////////////////////////////////////////////////////
-void Graph::triangleEnumerate()
-{
+void Graph::triangleEnumerate() {
   struct timeval t1, t2;
   double eTime;
 
   std::cout << "************************************************************"
             << "**********" << std::endl;
   std::cout << "Enumerating triangles ....." << std::endl;
-  std::cout << "************************************************************" 
+  std::cout << "************************************************************"
             << "**********" << std::endl;
 
   ///////////////////////////////////////////////////////////////////////
@@ -87,9 +86,9 @@ void Graph::triangleEnumerate()
   mMatrix.permute();
   gettimeofday(&t2, NULL);
 
-  std::cout << " done" <<std::endl;
+  std::cout << " done" << std::endl;
 
-  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec-t1.tv_usec)/1000000.0);
+  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec - t1.tv_usec) / 1000000.0);
   std::cout << "TIME - Time to permute  matrix: " << eTime << std::endl;
 
   std::cout << "--------------------" << std::endl;
@@ -110,12 +109,12 @@ void Graph::triangleEnumerate()
 
   gettimeofday(&t2, NULL);
 
-  std::cout << " done" <<std::endl;
+  std::cout << " done" << std::endl;
 
-  //L.print();
-  //U.print();
+  // L.print();
+  // U.print();
 
-  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec-t1.tv_usec)/1000000.0);
+  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec - t1.tv_usec) / 1000000.0);
   std::cout << "TIME - Time to create L, U  matrices: " << eTime << std::endl;
 
   std::cout << "--------------------" << std::endl;
@@ -126,17 +125,17 @@ void Graph::triangleEnumerate()
   ///////////////////////////////////////////////////////////////////////
   std::cout << "--------------------" << std::endl;
 
-  CSRMat B(L.getM(),U.getN());
+  CSRMat B(L.getM(), U.getN());
 
   std::cout << "B = L*U: " << std::endl;
 
   gettimeofday(&t1, NULL);
-  B.matmat(L,U);
+  B.matmat(L, U);
   gettimeofday(&t2, NULL);
 
   //  B.print();
 
-  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec-t1.tv_usec)/1000000.0);
+  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec - t1.tv_usec) / 1000000.0);
   std::cout << "TIME - Time to compute B = L*U: " << eTime << std::endl;
 
   std::cout << "--------------------" << std::endl;
@@ -157,7 +156,7 @@ void Graph::triangleEnumerate()
 
   //  B.print();
 
-  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec-t1.tv_usec)/1000000.0);
+  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec - t1.tv_usec) / 1000000.0);
   std::cout << "TIME - Time to compute B = B .* L: " << eTime << std::endl;
   std::cout << "--------------------" << std::endl;
   ///////////////////////////////////////////////////////////////////////
@@ -174,17 +173,16 @@ void Graph::triangleEnumerate()
   assert(mTriangles.size() % 3 == 0);
   mNumTriangles = mTriangles.size() / 3;
 
-  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec-t1.tv_usec)/1000000.0);
+  eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec - t1.tv_usec) / 1000000.0);
   std::cout << "TIME - Time to sum up triangles: " << eTime << std::endl;
 
   std::cout << "--------------------" << std::endl;
   ///////////////////////////////////////////////////////////////////////
 
-
   std::cout << "************************************************************"
             << "**********" << std::endl;
   std::cout << "Finished triangle enumeration" << std::endl;
-  std::cout << "************************************************************" 
+  std::cout << "************************************************************"
             << "**********" << std::endl;
 }
 //////////////////////////////////////////////////////////////////////////////
@@ -192,40 +190,35 @@ void Graph::triangleEnumerate()
 //////////////////////////////////////////////////////////////////////////////
 // Prints triangles in graph
 //////////////////////////////////////////////////////////////////////////////
-void Graph::printTriangles() const
-{
+void Graph::printTriangles() const {
   std::cout << "Triangles: " << std::endl;
 
-  //Iterate through list and output triangles
+  // Iterate through list and output triangles
   std::list<int>::const_iterator iter;
-  for (iter=mTriangles.begin(); iter!=mTriangles.end(); iter++)
-  {
-    std::cout << "(" << *iter+1;
+  for (iter = mTriangles.begin(); iter != mTriangles.end(); iter++) {
+    std::cout << "(" << *iter + 1;
     iter++;
-    std::cout << ", " << *iter+1;
+    std::cout << ", " << *iter + 1;
     iter++;
-    std::cout << ", " << *iter+1 << ")" << std::endl;
+    std::cout << ", " << *iter + 1 << ")" << std::endl;
   }
 }
 //////////////////////////////////////////////////////////////////////////////
-
 
 //////////////////////////////////////////////////////////////////////////////
 //
 // Note: Assumes triangles are in order by vertex
 //////////////////////////////////////////////////////////////////////////////
-void Graph::calculateTriangleDegrees()
-{
-  std::map<int,int>::iterator vdIter;
+void Graph::calculateTriangleDegrees() {
+  std::map<int, int>::iterator vdIter;
 
-  std::map<int,std::map<int,int> >::iterator edIter1;
-  std::map<int,int>::iterator edIter2;
+  std::map<int, std::map<int, int>>::iterator edIter1;
+  std::map<int, int>::iterator edIter2;
 
-  //Iterate through list of triangles
+  // Iterate through list of triangles
   std::list<int>::const_iterator iter;
-  int numEdgesInTriangles=0;
-  for (iter=mTriangles.begin(); iter!=mTriangles.end(); iter++)
-  {
+  int numEdgesInTriangles = 0;
+  for (iter = mTriangles.begin(); iter != mTriangles.end(); iter++) {
     int v1 = *iter;
     iter++;
     int v2 = *iter;
@@ -236,13 +229,10 @@ void Graph::calculateTriangleDegrees()
     // Increment triangle degree of v1
     /////////////////////////////////
     vdIter = mVDegrees.find(v1);
-    if(vdIter != mVDegrees.end())
-    {
+    if (vdIter != mVDegrees.end()) {
       (*vdIter).second++;
-    }
-    else
-    {
-      mVDegrees[v1]=1;
+    } else {
+      mVDegrees[v1] = 1;
     }
     /////////////////////////////////
 
@@ -250,13 +240,10 @@ void Graph::calculateTriangleDegrees()
     // Increment triangle degree of v2
     /////////////////////////////////
     vdIter = mVDegrees.find(v2);
-    if(vdIter != mVDegrees.end())
-    {
+    if (vdIter != mVDegrees.end()) {
       (*vdIter).second++;
-    }
-    else
-    {
-      mVDegrees[v2]=1;
+    } else {
+      mVDegrees[v2] = 1;
     }
     /////////////////////////////////
 
@@ -264,13 +251,10 @@ void Graph::calculateTriangleDegrees()
     // Increment triangle degree of v3
     /////////////////////////////////
     vdIter = mVDegrees.find(v3);
-    if(vdIter != mVDegrees.end())
-    {
+    if (vdIter != mVDegrees.end()) {
       (*vdIter).second++;
-    }
-    else
-    {
-      mVDegrees[v3]=1;
+    } else {
+      mVDegrees[v3] = 1;
     }
     /////////////////////////////////
 
@@ -278,23 +262,17 @@ void Graph::calculateTriangleDegrees()
     // Increment triangle degree of edge v1,v2
     /////////////////////////////////
     edIter1 = mEDegrees.find(v1);
-    if(edIter1 != mEDegrees.end())
-    {
+    if (edIter1 != mEDegrees.end()) {
       edIter2 = (*edIter1).second.find(v2);
 
-      if(edIter2 != (*edIter1).second.end())
-      {
+      if (edIter2 != (*edIter1).second.end()) {
         (*edIter2).second++;
+      } else {
+        (*edIter1).second[v2] = 1;
+        numEdgesInTriangles++;
       }
-      else
-      {
-        (*edIter1).second[v2]=1;
-	numEdgesInTriangles++;
-      }
-    }
-    else
-    {
-      mEDegrees[v1][v2]=1;
+    } else {
+      mEDegrees[v1][v2] = 1;
       numEdgesInTriangles++;
     }
     /////////////////////////////////
@@ -303,23 +281,17 @@ void Graph::calculateTriangleDegrees()
     // Increment triangle degree of edge v1,v3
     /////////////////////////////////
     edIter1 = mEDegrees.find(v1);
-    if(edIter1 != mEDegrees.end())
-    {
+    if (edIter1 != mEDegrees.end()) {
       edIter2 = (*edIter1).second.find(v3);
 
-      if(edIter2 != (*edIter1).second.end())
-      {
+      if (edIter2 != (*edIter1).second.end()) {
         (*edIter2).second++;
-      }
-      else
-      {
-        (*edIter1).second[v3]=1;
+      } else {
+        (*edIter1).second[v3] = 1;
         numEdgesInTriangles++;
       }
-    }
-    else
-    {
-      mEDegrees[v1][v3]=1;
+    } else {
+      mEDegrees[v1][v3] = 1;
       numEdgesInTriangles++;
     }
     /////////////////////////////////
@@ -328,43 +300,36 @@ void Graph::calculateTriangleDegrees()
     // Increment triangle degree of edge v2,v3
     /////////////////////////////////
     edIter1 = mEDegrees.find(v2);
-    if(edIter1 != mEDegrees.end())
-    {
+    if (edIter1 != mEDegrees.end()) {
       edIter2 = (*edIter1).second.find(v3);
 
-      if(edIter2 != (*edIter1).second.end())
-      {
+      if (edIter2 != (*edIter1).second.end()) {
         (*edIter2).second++;
+      } else {
+        (*edIter1).second[v3] = 1;
+        numEdgesInTriangles++;
       }
-      else
-      {
-        (*edIter1).second[v3]=1;
-	numEdgesInTriangles++;
-      }
-    }
-    else
-    {
-      mEDegrees[v2][v3]=1;
+    } else {
+      mEDegrees[v2][v3] = 1;
       numEdgesInTriangles++;
     }
     ////////////////////////////////
   }
-
 }
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-void Graph::orderTriangles()
-{
+void Graph::orderTriangles() {
   int tmpV1, tmpV2, tmpV3;
 
-  //Iterate through list of triangles
-  std::list<int>::iterator iter1,iter2,iter3;
-  for (iter1=mTriangles.begin(); iter1!=mTriangles.end(); iter1++)
-  {
-    iter2=iter1; iter2++;
-    iter3=iter2; iter3++;
+  // Iterate through list of triangles
+  std::list<int>::iterator iter1, iter2, iter3;
+  for (iter1 = mTriangles.begin(); iter1 != mTriangles.end(); iter1++) {
+    iter2 = iter1;
+    iter2++;
+    iter3 = iter2;
+    iter3++;
 
     tmpV1 = *iter1;
     tmpV2 = *iter2;
@@ -373,124 +338,97 @@ void Graph::orderTriangles()
     /////////////////////////////////
     // order triangles
     /////////////////////////////////
-    if(tmpV1 < tmpV2)
-    {
-      if (tmpV1 < tmpV3)
-      {
+    if (tmpV1 < tmpV2) {
+      if (tmpV1 < tmpV3) {
         *iter1 = tmpV1;
-	if(tmpV2<tmpV3)
-	{
-	  *iter2 = tmpV2;
-	  *iter3 = tmpV3;
-	}
-	else
-	{
-	  *iter2 = tmpV3;
-	  *iter3 = tmpV2;
-	}
-      }
-      else
-      {
+        if (tmpV2 < tmpV3) {
+          *iter2 = tmpV2;
+          *iter3 = tmpV3;
+        } else {
+          *iter2 = tmpV3;
+          *iter3 = tmpV2;
+        }
+      } else {
         *iter1 = tmpV3;
         *iter2 = tmpV1;
         *iter3 = tmpV2;
       }
 
-    }
-    else
-    {
-      if (tmpV1 < tmpV3)
-      {
+    } else {
+      if (tmpV1 < tmpV3) {
         *iter1 = tmpV2;
         *iter2 = tmpV1;
         *iter3 = tmpV3;
-      }
-      else
-      {
+      } else {
         *iter3 = tmpV1;
-        if(tmpV2<tmpV3)
-        {
+        if (tmpV2 < tmpV3) {
           *iter1 = tmpV2;
-	  *iter2 = tmpV3;
-        }
-        else
-        {
+          *iter2 = tmpV3;
+        } else {
           *iter1 = tmpV3;
-	  *iter2 = tmpV2;
+          *iter2 = tmpV2;
         }
-      } 
+      }
     }
     /////////////////////////////////
 
     iter1++;
     iter1++;
   }
-
 }
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-void Graph::calculateKCounts()
-{
+void Graph::calculateKCounts() {
   std::list<int>::const_iterator iter;
-  for (iter=mTriangles.begin(); iter!=mTriangles.end(); iter++)
-  {
-    int v1=*iter;
+  for (iter = mTriangles.begin(); iter != mTriangles.end(); iter++) {
+    int v1 = *iter;
     iter++;
-    int v2=*iter;
+    int v2 = *iter;
     iter++;
-    int v3=*iter;
+    int v3 = *iter;
 
     unsigned int tvMin, teMin;
 
-    findMinTriDegrees(v1,v2,v3,tvMin,teMin);
+    findMinTriDegrees(v1, v2, v3, tvMin, teMin);
 
-    int maxK=3;
-    for(unsigned int k=3; k<mKCounts.size(); k++)
-    {
-      if(tvMin >= choose2(k-1) && teMin >= k-2)
-      {
+    int maxK = 3;
+    for (unsigned int k = 3; k < mKCounts.size(); k++) {
+      if (tvMin >= choose2(k - 1) && teMin >= k - 2) {
         maxK = k;
-      }
-      else
-      {
+      } else {
         break;
       }
     }
     mKCounts[maxK]++;
   }
-
 }
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-void Graph::printKCounts()
-{
+void Graph::printKCounts() {
   std::cout << "K-Counts: " << std::endl;
-  for(unsigned int i=3; i<mKCounts.size(); i++)
-  {
-    std::cout << "K[" << i << "] = " <<mKCounts[i] << std::endl;
+  for (unsigned int i = 3; i < mKCounts.size(); i++) {
+    std::cout << "K[" << i << "] = " << mKCounts[i] << std::endl;
   }
 }
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-void Graph::findMinTriDegrees(int v1, int v2, int v3, unsigned int &tvMin, unsigned int &teMin)
-{
+void Graph::findMinTriDegrees(int v1, int v2, int v3, unsigned int &tvMin,
+                              unsigned int &teMin) {
   /////////////////////////////////////////////////////////////////////////
   // Find tvMin
   /////////////////////////////////////////////////////////////////////////
   tvMin = mVDegrees[v1];
-  if(mVDegrees[v2] < (int) tvMin)
-  {
-    tvMin=mVDegrees[v2];
+  if (mVDegrees[v2] < (int)tvMin) {
+    tvMin = mVDegrees[v2];
   }
-  if(mVDegrees[v3] < (int) tvMin)
-  {
-    tvMin=mVDegrees[v3];
+  if (mVDegrees[v3] < (int)tvMin) {
+    tvMin = mVDegrees[v3];
   }
   /////////////////////////////////////////////////////////////////////////
 
@@ -498,13 +436,11 @@ void Graph::findMinTriDegrees(int v1, int v2, int v3, unsigned int &tvMin, unsig
   // Find teMin
   /////////////////////////////////////////////////////////////////////////
   teMin = mEDegrees[v1][v2];
-  if(mEDegrees[v1][v3] < (int) teMin)
-  {
-    teMin=mEDegrees[v1][v3];
+  if (mEDegrees[v1][v3] < (int)teMin) {
+    teMin = mEDegrees[v1][v3];
   }
-  if(mEDegrees[v2][v3] < (int) teMin)
-  {
-    teMin=mEDegrees[v2][v3];
+  if (mEDegrees[v2][v3] < (int)teMin) {
+    teMin = mEDegrees[v2][v3];
   }
   /////////////////////////////////////////////////////////////////////////
 }
@@ -512,17 +448,12 @@ void Graph::findMinTriDegrees(int v1, int v2, int v3, unsigned int &tvMin, unsig
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-unsigned int choose2(unsigned int k)
-{
-  if(k==1)
-  {
+unsigned int choose2(unsigned int k) {
+  if (k == 1) {
     return 0;
-  }
-  else if(k>1)
-  {
-    return k*(k-1)/2;
+  } else if (k > 1) {
+    return k * (k - 1) / 2;
   }
   return 0;
 }
 //////////////////////////////////////////////////////////////////////////////
-

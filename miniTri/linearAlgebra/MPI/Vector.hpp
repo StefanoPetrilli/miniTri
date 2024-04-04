@@ -1,12 +1,12 @@
 //@HEADER
 // ************************************************************************
-// 
+//
 //                        miniTri v. 1.0
 //              Copyright (2016) Sandia Corporation
-// 
+//
 // Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 // the U.S. Government retains certain rights in this software.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -36,14 +36,14 @@
 //
 // Questions? Contact  Jon Berry (jberry@sandia.gov)
 //                     Michael Wolf (mmwolf@sandia.gov)
-// 
+//
 // ************************************************************************
 //@HEADER
 
 //////////////////////////////////////////////////////////////////////////////
 //                                                                          //
 // File:      Vector.h                                                      //
-// Project:   miniTri                                                       //   
+// Project:   miniTri                                                       //
 // Author:    Michael Wolf                                                  //
 //                                                                          //
 // Description:                                                             //
@@ -53,43 +53,36 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <vector>
 #include <mpi.h>
+#include <vector>
 
 //////////////////////////////////////////////////////////////////////////////
 // Compressed Sparse Row storage format Matrix
 //////////////////////////////////////////////////////////////////////////////
-class Vector
-{
+class Vector {
 
- private:
-
-  std::vector<int> mElements;                             // elements in vector
+private:
+  std::vector<int> mElements; // elements in vector
   MPI_Comm mComm;
   int mWorldSize;
   int mMyRank;
 
- public:
-
+public:
   //////////////////////////////////////////////////////////////////////////
   // default constructor -- builds empty matrix
   //////////////////////////////////////////////////////////////////////////
-  Vector(MPI_Comm _comm) 
-    :mElements(),mComm(_comm)
-  {
-    MPI_Comm_size(mComm,&mWorldSize);
-    MPI_Comm_rank(mComm,&mMyRank);
+  Vector(MPI_Comm _comm) : mElements(), mComm(_comm) {
+    MPI_Comm_size(mComm, &mWorldSize);
+    MPI_Comm_rank(mComm, &mMyRank);
   };
   //////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////
   // constructor -- allocates memory for CSR sparse matrix
   //////////////////////////////////////////////////////////////////////////
-  Vector(int _m, MPI_Comm _comm)
-    :mElements(_m), mComm(_comm)
-  {
-    MPI_Comm_size(mComm,&mWorldSize);
-    MPI_Comm_rank(mComm,&mMyRank);
+  Vector(int _m, MPI_Comm _comm) : mElements(_m), mComm(_comm) {
+    MPI_Comm_size(mComm, &mWorldSize);
+    MPI_Comm_rank(mComm, &mMyRank);
   };
   //////////////////////////////////////////////////////////////////////////
 
@@ -97,17 +90,14 @@ class Vector
   // Copy constructor -- No data reallocation, just copying of smart pointers
   //////////////////////////////////////////////////////////////////////////
   Vector(const Vector &obj)
-    :mElements(obj.mElements),mComm(obj.mComm),mWorldSize(obj.mWorldSize),mMyRank(obj.mMyRank)
-  {
-  };
+      : mElements(obj.mElements), mComm(obj.mComm), mWorldSize(obj.mWorldSize),
+        mMyRank(obj.mMyRank){};
   //////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////
   // destructor -- deletes matrix
   //////////////////////////////////////////////////////////////////////////
-  ~Vector()
-  {
-  };
+  ~Vector(){};
   //////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////
@@ -115,43 +105,31 @@ class Vector
   //////////////////////////////////////////////////////////////////
 
   // returns the number of rows
-  unsigned int getSize() const { return mElements.size();};
-
+  unsigned int getSize() const { return mElements.size(); };
 
   //////////////////////////////////////////////////////////////////////////
   // v[i] operator -- accessor for elements in vector
   //////////////////////////////////////////////////////////////////////////
-  int & operator [](int indx)
-  {
-    return mElements[indx];
-  }
+  int &operator[](int indx) { return mElements[indx]; }
   //////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////
   // v[i] operator -- accessor for elements in vector
   //////////////////////////////////////////////////////////////////////////
-  const int & operator [](int indx) const
-  {
-    return mElements[indx];
-  }
+  const int &operator[](int indx) const { return mElements[indx]; }
   //////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////
-  void resize(int _m)
-  {
-    mElements.resize(_m);
-  }
+  void resize(int _m) { mElements.resize(_m); }
   //////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////
   // setVal -- function sets all elements to be alpha
   //////////////////////////////////////////////////////////////////////////
-  void setScalar(int alpha) 
-  {
-    for(unsigned int i=0;i<mElements.size();i++)
-    {
-      mElements[i]=alpha;
+  void setScalar(int alpha) {
+    for (unsigned int i = 0; i < mElements.size(); i++) {
+      mElements[i] = alpha;
     }
   }
   //////////////////////////////////////////////////////////////////////////
@@ -159,19 +137,14 @@ class Vector
   //////////////////////////////////////////////////////////////////////////
   // Output vector
   //////////////////////////////////////////////////////////////////////////
-  void Print() const
-  {
-    if(mMyRank==0)
-    {
+  void Print() const {
+    if (mMyRank == 0) {
       std::cout << "Vector: " << std::endl;
     }
 
-    for(int rank=0; rank<mWorldSize; rank++)
-    {
-      if(mMyRank==rank)
-      {
-        for(unsigned int i=0; i<mElements.size(); i++)
-        {
+    for (int rank = 0; rank < mWorldSize; rank++) {
+      if (mMyRank == rank) {
+        for (unsigned int i = 0; i < mElements.size(); i++) {
           std::cout << mElements[i] << std::endl;
         }
       }
@@ -179,7 +152,6 @@ class Vector
     }
   }
   //////////////////////////////////////////////////////////////////////////
-
 };
 //////////////////////////////////////////////////////////////////////////////
 

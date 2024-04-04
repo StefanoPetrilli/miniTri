@@ -1,12 +1,12 @@
 //@HEADER
 // ************************************************************************
-// 
+//
 //                        miniTri v. 1.0
 //              Copyright (2016) Sandia Corporation
-// 
+//
 // Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 // the U.S. Government retains certain rights in this software.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -36,10 +36,9 @@
 //
 // Questions? Contact  Jon Berry (jberry@sandia.gov)
 //                     Michael Wolf (mmwolf@sandia.gov)
-// 
+//
 // ************************************************************************
 //@HEADER
-
 
 //////////////////////////////////////////////////////////////////////////////
 //                                                                          //
@@ -51,9 +50,9 @@
 //              Driver for miniTri miniapp                                  //
 //                                                                          //
 //////////////////////////////////////////////////////////////////////////////
-#include <iostream>
-#include <cstdlib>
 #include <cassert>
+#include <cstdlib>
+#include <iostream>
 
 #include <hpx/hpx.hpp>
 #include <hpx/hpx_init.hpp>
@@ -62,23 +61,21 @@
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-int hpx_main(int argc, char *argv[])
-{
+int hpx_main(int argc, char *argv[]) {
   struct timeval t1, t2;
   std::cout << "Initializing HPX!\n";
 
-  if(argc!=3)
-    {
-      std::cerr << "Usage: triangleEnumerate mat.mtx blocksize" << std::endl;
-      exit(1);
-    }
+  if (argc != 3) {
+    std::cerr << "Usage: triangleEnumerate mat.mtx blocksize" << std::endl;
+    exit(1);
+  }
 
   std::string mat = argv[1];
   int blocksize = atoi(argv[2]);
 
   gettimeofday(&t1, NULL);
 
-  Graph g(mat,blocksize);
+  Graph g(mat, blocksize);
   g.triangleEnumerate();
   //  g.printTriangles();
 
@@ -91,7 +88,8 @@ int hpx_main(int argc, char *argv[])
   g.printNumTriangles();
   g.printKCounts();
 
-  double eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec-t1.tv_usec)/1000000.0);
+  double eTime =
+      t2.tv_sec - t1.tv_sec + ((t2.tv_usec - t1.tv_usec) / 1000000.0);
   std::cout << "TIME - Time to compute miniTri: " << eTime << std::endl;
 
   return hpx::finalize();
@@ -99,10 +97,7 @@ int hpx_main(int argc, char *argv[])
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-// Initializes HPX                                                           
+// Initializes HPX
 //////////////////////////////////////////////////////////////////////////////
-int main(int argc, char *argv[])
-{
-  return hpx::init(argc,argv);
-}
-//////////////////////////////////////////////////////////////////////////////              
+int main(int argc, char *argv[]) { return hpx::init(argc, argv); }
+//////////////////////////////////////////////////////////////////////////////

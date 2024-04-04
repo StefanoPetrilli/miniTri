@@ -1,12 +1,12 @@
 //@HEADER
 // ************************************************************************
-// 
+//
 //                        miniTri v. 1.0
 //              Copyright (2016) Sandia Corporation
-// 
+//
 // Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 // the U.S. Government retains certain rights in this software.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -36,7 +36,7 @@
 //
 // Questions? Contact  Jon Berry (jberry@sandia.gov)
 //                     Michael Wolf (mmwolf@sandia.gov)
-// 
+//
 // ************************************************************************
 //@HEADER
 
@@ -53,60 +53,53 @@
 #ifndef CSRMATRIX_H
 #define CSRMATRIX_H
 
-typedef enum {UNDEFINED,LOWERTRI,UPPERTRI,INCIDENCE} matrixtype;
+typedef enum { UNDEFINED, LOWERTRI, UPPERTRI, INCIDENCE } matrixtype;
 
 #include <list>
-#include <vector>
 #include <map>
+#include <vector>
 
 class Vector;
 
 //////////////////////////////////////////////////////////////////////////////
 // Compressed Sparse Row storage format Matrix
 //////////////////////////////////////////////////////////////////////////////
-class CSRMat 
-{
+class CSRMat {
 
- private:
+private:
   matrixtype type;
-  int m;   //number of rows
-  int n;   //number of cols
-  int nnz; //number of nonzeros
+  int m;   // number of rows
+  int n;   // number of cols
+  int nnz; // number of nonzeros
 
-  std::vector<int> nnzInRow;                             // nnz in each row
-  std::vector<std::vector<int> > cols;           //columns of nonzeros
-  std::vector<std::vector<int> > vals; //values of nonzeros
-  std::vector<std::vector<int> > vals2; //values of nonzeros
+  std::vector<int> nnzInRow;           // nnz in each row
+  std::vector<std::vector<int>> cols;  // columns of nonzeros
+  std::vector<std::vector<int>> vals;  // values of nonzeros
+  std::vector<std::vector<int>> vals2; // values of nonzeros
 
- public:
+public:
   //////////////////////////////////////////////////////////////////////////
   // default constructor -- builds empty matrix
   //////////////////////////////////////////////////////////////////////////
-  CSRMat() 
-    :type(UNDEFINED),m(0),n(0),nnz(0),nnzInRow(0),cols(0),vals(0),vals2(0)
-  {
-  };
+  CSRMat()
+      : type(UNDEFINED), m(0), n(0), nnz(0), nnzInRow(0), cols(0), vals(0),
+        vals2(0){};
   //////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////
   // Constructor that accepts matrix type as an argument
   //////////////////////////////////////////////////////////////////////////
-  CSRMat(matrixtype _type) 
-    :type(_type),m(0),n(0),nnz(0),nnzInRow(0),cols(0),vals(0),vals2(0)
-  {
-  };
+  CSRMat(matrixtype _type)
+      : type(_type), m(0), n(0), nnz(0), nnzInRow(0), cols(0), vals(0),
+        vals2(0){};
   //////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////
   // constructor -- allocates memory for CSR sparse matrix
   //////////////////////////////////////////////////////////////////////////
-  CSRMat(int _m, int _n,bool allocateVals2=false)
-    :type(UNDEFINED),m(_m),n(_n),
-     nnzInRow(m),cols(m),
-     vals(m)
-  {
-    if(allocateVals2==true)
-    {
+  CSRMat(int _m, int _n, bool allocateVals2 = false)
+      : type(UNDEFINED), m(_m), n(_n), nnzInRow(m), cols(m), vals(m) {
+    if (allocateVals2 == true) {
       vals2.resize(m);
     }
   };
@@ -115,9 +108,7 @@ class CSRMat
   //////////////////////////////////////////////////////////////////////////
   // destructor -- deletes matrix
   //////////////////////////////////////////////////////////////////////////
-  ~CSRMat()
-  {
-  };
+  ~CSRMat(){};
   //////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////
@@ -141,24 +132,22 @@ class CSRMat
   // additional accessors and accessor prototypes
   //////////////////////////////////////////////////////////////////
   // returns the number of rows
-  int getM() const { return m;};
+  int getM() const { return m; };
 
   // returns the number of cols
-  int getN() const { return n;};
+  int getN() const { return n; };
 
   // returns the number of cols
-  int getNNZ() const { return nnz;};
+  int getNNZ() const { return nnz; };
 
   // returns NNZ in row rnum
-  inline int getNNZInRow(int rnum) const {return nnzInRow[rnum];};
+  inline int getNNZInRow(int rnum) const { return nnzInRow[rnum]; };
 
   // returns column # for nonzero in row rowi at index nzindx
-  inline int getCol(int rowi, int nzindx) const {return cols[rowi][nzindx];};
-
+  inline int getCol(int rowi, int nzindx) const { return cols[rowi][nzindx]; };
 
   // returns value for nonzero at inddex nzindx
-  inline int getVal(int rowi, int nzindx) const 
-    {return vals[rowi][nzindx];};
+  inline int getVal(int rowi, int nzindx) const { return vals[rowi][nzindx]; };
 
   //////////////////////////////////////////////////////////////////
 
@@ -171,19 +160,19 @@ class CSRMat
   //////////////////////////////////////////////////////////////////
 
   void computeKCounts(const Vector &vTriDegrees, const Vector &eTriDegrees,
-                      const std::map<int,std::map<int,int> > & edgeInds,
+                      const std::map<int, std::map<int, int>> &edgeInds,
                       std::vector<int> &kCounts);
 
-  void readMMMatrix(const char* fname);
-  void readBinMatrix(const char* fname);
+  void readMMMatrix(const char *fname);
+  void readBinMatrix(const char *fname);
 
   void createTriMatrix(const CSRMat &matrix, matrixtype mtype);
-  void createIncidentMatrix(const CSRMat &matrix, std::map<int,std::map<int,int> > & eIndices);
+  void createIncidentMatrix(const CSRMat &matrix,
+                            std::map<int, std::map<int, int>> &eIndices);
 
   void permute();
 
   //////////////////////////////////////////////////////////////////////////
-
 };
 //////////////////////////////////////////////////////////////////////////////
 

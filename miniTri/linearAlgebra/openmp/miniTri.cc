@@ -1,12 +1,12 @@
 //@HEADER
 // ************************************************************************
-// 
+//
 //                        miniTri v. 1.0
 //              Copyright (2016) Sandia Corporation
-// 
+//
 // Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 // the U.S. Government retains certain rights in this software.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -36,7 +36,7 @@
 //
 // Questions? Contact  Jon Berry (jberry@sandia.gov)
 //                     Michael Wolf (mmwolf@sandia.gov)
-// 
+//
 // ************************************************************************
 //@HEADER
 
@@ -50,9 +50,9 @@
 //              Driver for miniTri miniapp                                  //
 //                                                                          //
 //////////////////////////////////////////////////////////////////////////////
-#include <iostream>
-#include <cstdlib>
 #include <cassert>
+#include <cstdlib>
+#include <iostream>
 
 #include <omp.h>
 
@@ -63,14 +63,13 @@
 //////////////////////////////////////////////////////////////////////////////
 // Main
 //////////////////////////////////////////////////////////////////////////////
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   struct timeval t1, t2;
 
- 
-  if(argc!=4 && argc!=5)
-  {
-    std::cerr << "Usage: miniTri.exe matrixFile blockSize numThreads [fileformat ={MM || Bin}]" << std::endl;
+  if (argc != 4 && argc != 5) {
+    std::cerr << "Usage: miniTri.exe matrixFile blockSize numThreads "
+                 "[fileformat ={MM || Bin}]"
+              << std::endl;
     exit(1);
   }
 
@@ -79,20 +78,14 @@ int main(int argc, char *argv[])
   int numThreads = atoi(argv[3]);
   bool isBinFile = false;
 
-  if(argc==5)
-  {
+  if (argc == 5) {
     std::string fileFormat = std::string(argv[4]);
 
-    if(fileFormat == "MM")
-    {
-      isBinFile=false; 
-    }
-    else if(fileFormat == "Bin")
-    {
-      isBinFile=true;
-    }
-    else
-    {
+    if (fileFormat == "MM") {
+      isBinFile = false;
+    } else if (fileFormat == "Bin") {
+      isBinFile = true;
+    } else {
       std::cerr << "File format must be MM or Bin" << std::endl;
       exit(1);
     }
@@ -102,30 +95,23 @@ int main(int argc, char *argv[])
 
   gettimeofday(&t1, NULL);
 
-
-  Graph g(mat,isBinFile,blockSize);
+  Graph g(mat, isBinFile, blockSize);
 
   g.triangleEnumerate();
   g.calculateTriangleDegrees();
   g.calculateKCounts();
 
-
   gettimeofday(&t2, NULL);
 
-
-
   std::cout << "Number of Triangles: " << g.getNumTriangles() << std::endl;
-  //g.printTriangles();
+  // g.printTriangles();
   g.printKCounts();
 
-
-  double eTime = t2.tv_sec - t1.tv_sec + ((t2.tv_usec-t1.tv_usec)/1000000.0);
+  double eTime =
+      t2.tv_sec - t1.tv_sec + ((t2.tv_usec - t1.tv_usec) / 1000000.0);
 
   std::cout << "TIME - Time to compute miniTri: " << eTime << std::endl;
 
-
-  //MMW need to unpermute matrix
-
+  // MMW need to unpermute matrix
 }
 //////////////////////////////////////////////////////////////////////////////
-

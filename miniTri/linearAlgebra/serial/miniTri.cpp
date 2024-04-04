@@ -1,12 +1,12 @@
 //@HEADER
 // ************************************************************************
-// 
+//
 //                        miniTri v. 1.0
 //              Copyright (2016) Sandia Corporation
-// 
+//
 // Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 // the U.S. Government retains certain rights in this software.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -36,7 +36,7 @@
 //
 // Questions? Contact  Jon Berry (jberry@sandia.gov)
 //                     Michael Wolf (mmwolf@sandia.gov)
-// 
+//
 // ************************************************************************
 //@HEADER
 
@@ -50,45 +50,37 @@
 //              Enumerates triangles in graphs                              //
 //                                                                          //
 //////////////////////////////////////////////////////////////////////////////
-#include <iostream>
-#include <cstdlib>
 #include <cassert>
+#include <cstdlib>
+#include <iostream>
 
 #include "Graph.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-int main(int argc, char *argv[])
-{
-  if(argc!=2 && argc!=3)
-  {
-    std::cerr << "Usage: miniTri matrixFile [fileformat ={MM || Bin}]" << std::endl;
+int main(int argc, char *argv[]) {
+  if (argc != 2 && argc != 3) {
+    std::cerr << "Usage: miniTri matrixFile [fileformat ={MM || Bin}]"
+              << std::endl;
     exit(1);
   }
 
   std::string mat = argv[1];
   bool isBinFile = false;
 
-  if(argc==3)
-  {
+  if (argc == 3) {
     std::string fileFormat = std::string(argv[2]);
-    if(fileFormat == "MM")
-    {
-      isBinFile=false;
-    }
-    else if(fileFormat == "Bin")
-    {
-      isBinFile=true;
-    }
-    else
-    {
+    if (fileFormat == "MM") {
+      isBinFile = false;
+    } else if (fileFormat == "Bin") {
+      isBinFile = true;
+    } else {
       std::cerr << "File format must be MM or Bin" << std::endl;
       exit(1);
     }
   }
 
-
-  Graph g(mat,isBinFile);
+  Graph g(mat, isBinFile);
   g.triangleEnumerate();
   std::cout << "Number of Triangles: " << g.getNumTriangles() << std::endl;
   //   g.printTriangles();
@@ -96,8 +88,5 @@ int main(int argc, char *argv[])
   g.calculateTriangleDegrees();
   g.calculateKCounts();
   g.printKCounts();
-
-
 }
 //////////////////////////////////////////////////////////////////////////////
-
