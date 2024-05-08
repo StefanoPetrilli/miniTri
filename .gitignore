@@ -3,6 +3,15 @@
 *.a
 *.err
 *.out
+*.pcf
+*.prv
+*.row
+*.mpit
+*.sys
+*.sym
+*.stmp
+*.ttmp
+*.mpits
 pptm-hw-1/traces/4
 pptm-hw-1/traces/16
 pptm-hw-1/traces/32

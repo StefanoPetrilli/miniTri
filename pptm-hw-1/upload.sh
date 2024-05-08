@@ -7,7 +7,6 @@ sshpass -p "$MN_PSW" \
     --exclude='.git/' \
     --exclude='traces/' \
     --exclude='cutted_traces/' \
+    --exclude='mn5-traces/' \
     ../ \
-    "$MN_USR"@"$MN_DT":/home/nct01/"$MN_USR"/bin/miniTri
-
-
+    "$MN_USR"@"$MN":/home/nct/"$MN_USR"/bin/miniTri

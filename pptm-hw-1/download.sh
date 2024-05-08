@@ -6,5 +6,5 @@ sshpass -p "$MN_PSW" \
     --exclude='*.exe' \
     --exclude='128/' \
     --exclude='.git' \
-    nct01110@"$MN_DT":/home/nct01/nct01110/bin/ \
+    nct01110@"$MN_DT":/home/nct/nct01110/bin/ \
     ../../
