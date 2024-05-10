@@ -409,6 +409,9 @@ void sendRecvSubmat(const CSRSubmat &submatToSend, int dst, int numRowsSend,
                     int startRowSend, MPI_Comm comm, int src,
                     CSRSubmat &remSubmat, int &numRowsRecv, int &startRowRecv) {
   MPI_Status status;
+  MPI_Request request;
+  std::vector<int> send_buffer, receive_buffer;
+  int receive_count = 0, send_count = 0, offset = 0;
 
   MPI_Sendrecv(&numRowsSend, 1, MPI_INT, dst, 0, &numRowsRecv, 1, MPI_INT, src,
                0, comm, &status);
@@ -421,6 +424,7 @@ void sendRecvSubmat(const CSRSubmat &submatToSend, int dst, int numRowsSend,
   std::vector<int> nnzInRowSend(numRowsSend);
   for (unsigned int i = 0; i < numRowsSend; i++) {
     nnzInRowSend[i] = submatToSend.cols[i].size();
+    send_count += submatToSend.cols[i].size();
   }
 
   MPI_Sendrecv(nnzInRowSend.data(), numRowsSend, MPI_INT, dst, 0,
@@ -431,55 +435,42 @@ void sendRecvSubmat(const CSRSubmat &submatToSend, int dst, int numRowsSend,
     if (nnzInRowRecv[rownum] > 0) {
       remSubmat.cols[rownum].resize(nnzInRowRecv[rownum]);
       remSubmat.vals[rownum].resize(nnzInRowRecv[rownum]);
+      receive_count += nnzInRowRecv[rownum];
     }
   }
 
-  MPI_Request requests[numRowsRecv];
-  MPI_Status stats[numRowsRecv];
+  receive_count *= 2;
+  send_count *= 2;
+
+  receive_buffer.reserve(receive_count);
+  MPI_Irecv(receive_buffer.data(), receive_count, MPI_INT, src, 0, comm,
+            &request);
+
+  send_buffer.reserve(send_count);
+  for (int rownum = 0; rownum < numRowsSend; rownum++) {
+    if (nnzInRowSend[rownum] > 0) {
+      send_buffer.insert(send_buffer.end(), submatToSend.cols[rownum].begin(),
+                         submatToSend.cols[rownum].end());
+      send_buffer.insert(send_buffer.end(), submatToSend.vals[rownum].begin(),
+                         submatToSend.vals[rownum].end());
+    }
+  }
+
+  MPI_Send((void *)send_buffer.data(), send_count, MPI_INT, dst, 0, comm);
+  MPI_Wait(&request, &status);
 
   for (int rownum = 0; rownum < numRowsRecv; rownum++) {
-    // post irecvs
-    // Is this ok when size==0
     if (nnzInRowRecv[rownum] > 0) {
-      MPI_Irecv((remSubmat.cols[rownum].data()), nnzInRowRecv[rownum], MPI_INT,
-                src, 0, comm, &(requests[rownum]));
-    } else {
-      requests[rownum] = MPI_REQUEST_NULL;
+      std::copy(receive_buffer.begin() + offset,
+                receive_buffer.begin() + offset + nnzInRowRecv[rownum],
+                remSubmat.cols[rownum].begin());
+      offset += nnzInRowRecv[rownum];
+      std::copy(receive_buffer.begin() + offset,
+                receive_buffer.begin() + offset + nnzInRowRecv[rownum],
+                remSubmat.vals[rownum].begin());
+      offset += nnzInRowRecv[rownum];
     }
   }
-
-  // Is this dangerous
-  for (int rownum = 0; rownum < numRowsSend; rownum++) {
-    // post sends
-    if (nnzInRowSend[rownum] > 0) {
-      MPI_Send((void *)submatToSend.cols[rownum].data(), nnzInRowSend[rownum],
-               MPI_INT, dst, 0, comm);
-    }
-  }
-
-  MPI_Waitall(numRowsRecv, requests, stats);
-
-  for (int rownum = 0; rownum < numRowsRecv; rownum++) {
-    // post irecvs
-    // Is this ok when size==0
-    if (nnzInRowRecv[rownum] > 0) {
-      MPI_Irecv((remSubmat.vals[rownum].data()), nnzInRowRecv[rownum], MPI_INT,
-                src, 0, comm, &(requests[rownum]));
-    } else {
-      requests[rownum] = MPI_REQUEST_NULL;
-    }
-  }
-
-  // Is this dangerous
-  for (int rownum = 0; rownum < numRowsSend; rownum++) {
-    // post sends
-    if (nnzInRowSend[rownum] > 0) {
-      MPI_Send((void *)submatToSend.vals[rownum].data(), nnzInRowSend[rownum],
-               MPI_INT, dst, 0, comm);
-    }
-  }
-
-  MPI_Waitall(numRowsRecv, requests, stats);
 }
 /////
 

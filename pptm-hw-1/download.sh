@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sshpass -p "$MN_PSW" \
-    rsync -avz --exclude='*.o' \
+    rsync -avz --compress-level=9 --exclude='*.o' \
     --exclude='*.a' \
     --exclude='*.exe' \
     --exclude='128/' \
